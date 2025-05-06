@@ -1,0 +1,56 @@
+{
+    "type": "java",
+    "request": "launch",
+    "name": "Launch MotorPH",
+    "mainClass": "App",
+    "projectName": "MotorPH",
+    "classPaths": [
+        "bin",
+        "lib/opencsv-5.10.jar",
+        "lib/commons-lang3-3.17.0.jar"
+    ],
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "motorph.ui.main.Main",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "motorph.ui.Main",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ui.Main",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
+            "name": "MainNavigationHomePanel_ADMIN",
+            "request": "launch",
+            "mainClass": "gui.MainNavigationHomePanel_ADMIN",
+            "projectName": "MotorPH_db4caa08"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "MotorPH_db4caa08"
+        },
+        {
+            "type": "java",
+            "name": "LoginFrame",
+            "request": "launch",
+            "mainClass": "gui.LoginFrame",
+            "projectName": "MotorPH_db4caa08"
+        }
+    ]
+}
