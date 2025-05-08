@@ -107,4 +107,73 @@ public class DataHandler {
             System.out.println("❌ Error writing time log: " + e.getMessage()); // Print error if writing fails
         }
     }
+
+    // NEW METHOD: 
+    public static void writeEmployeeData(List<EmployeeDetails> employees) {
+        try (Writer writer = new FileWriter(CSV_FILE);
+             CSVWriter csvWriter = new CSVWriter(writer,
+                     CSVWriter.DEFAULT_SEPARATOR,
+                     CSVWriter.NO_QUOTE_CHARACTER,
+                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                     CSVWriter.RFC4180_LINE_END)) {
+    
+            // Optional: write header
+            csvWriter.writeNext(new String[] {
+                "Employee #", "Last Name", "First Name", "Birthday", "Address", "Phone",
+                "SSS", "PhilHealth", "TIN", "Pag-IBIG", "Status", "Position",
+                "Supervisor", "Basic Salary", "Rice Subsidy", "Phone Allowance",
+                "Clothing Allowance", "Semi-Monthly Rate", "Hourly Rate"
+            });
+    
+            for (EmployeeDetails emp : employees) {
+                csvWriter.writeNext(emp.toCSVArray());
+            }
+    
+            System.out.println("✅ Employee data written to CSV.");
+        } catch (IOException e) {
+            System.out.println("❌ Error writing employee data: " + e.getMessage());
+        }
+    }
+    
+
+
+    // NEW METHOD: Add a new employee to the CSV file
+    public static void addEmployeeToCSV(EmployeeDetails emp) {
+        try (Writer writer = new FileWriter(CSV_FILE, true);
+                CSVWriter csvWriter = new CSVWriter(writer,
+                        CSVWriter.DEFAULT_SEPARATOR,
+                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                        CSVWriter.RFC4180_LINE_END)) {
+
+            csvWriter.writeNext(emp.toCSVArray());
+            System.out.println("✅ Employee added to CSV: " + emp.getEmployeeId());
+        
+        } catch (IOException e) {
+            System.out.println("❌ Error adding employee: " + e.getMessage());
+        }
+    }
+
+    // NEW METHOD: Remove an employee from the CSV file
+    public static void removeEmployeeFromCSV(String employeeNumber) {
+        List<EmployeeDetails> employees = readEmployeeDetails();
+            employees.removeIf(emp -> emp.getEmployeeId().equals(employeeNumber));
+            writeEmployeeData(employees);
+        System.out.println("🗑️ Employee #" + employeeNumber + " removed.");
+}
+
+
+    // NEW METHOD: Update an existing employee's details in the CSV file
+    public static void updateEmployeeinCSV(EmployeeDetails updateEmp) {
+        List<EmployeeDetails> employees = readEmployeeDetails();
+             for (int i = 0; i < employees.size(); i++) {
+                if (employees.get(i).getEmployeeId().equals(updateEmp.getEmployeeId())) {
+                    employees.set(i, updateEmp); // Update the employee details in the list
+                    break; // Exit loop after updating
+                }
+    }
+    writeEmployeeData(employees); // Write updated data back to CSV
+    System.out.println("✅ Employee #" + updateEmp.getEmployeeId() + " updated.");
+    }
+
 }

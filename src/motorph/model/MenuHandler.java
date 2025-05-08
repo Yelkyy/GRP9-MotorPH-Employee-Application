@@ -3,7 +3,7 @@ package motorph.model;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class modelMenu {
+public class MenuHandler {
 
     public String getIcon() {
         return icon;
@@ -29,13 +29,13 @@ public class modelMenu {
         this.type = type;
     }
 
-    public modelMenu(String icon, String name, menuType type) {
+    public MenuHandler(String icon, String name, menuType type) {
         this.icon = icon;
         this.name = name;
         this.type = type;
     }
 
-    public modelMenu() {
+    public MenuHandler() {
     }
 
     private String icon;

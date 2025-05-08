@@ -136,6 +136,14 @@ public class EmployeeDetails {
         return firstName + " " + lastName;
     }
 
+    // Converts EmployeeDetails object to a CSV array for writing to a file
+    public String[] toCSVArray() {
+        return new String[] { employeeNumber, lastName, firstName, birthday, address, phoneNumber, sssNumber,
+                philhealthNumber, tinNumber, pagIbigNumber, status, position, immediateSupervisor,
+                String.valueOf(basicSalary), String.valueOf(riceSubsidy), String.valueOf(phoneAllowance),
+                String.valueOf(clothingAllowance), String.valueOf(grossSemiMonthlyRate), String.valueOf(hourlyRate) };
+    }
+
     // Provides a string representation of the employee's basic info
     @Override
     public String toString() {
