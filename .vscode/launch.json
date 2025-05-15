@@ -12,6 +12,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Login",
+            "request": "launch",
+            "mainClass": "motorph.ui.Login",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
+            "name": "Dashboard",
+            "request": "launch",
+            "mainClass": "motorph.ui.main.Dashboard",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
+            "name": "Login",
+            "request": "launch",
+            "mainClass": "motorph.ui.main.Login",
+            "projectName": "MotorPH Employee Application_1190f2d3"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "motorph.ui.main.Main",
