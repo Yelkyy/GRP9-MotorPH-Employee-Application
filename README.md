@@ -1,5 +1,6 @@
 ## Change Log
-✅ Change Request: MPHCR01 📅 Date Implemented: May 19, 2025
+✅ Change Request: MPHCR01 
+📅 Date Implemented: May 19, 2025
 
 Description: Converted the console-based MotorPH Employee App to a working GUI-based application.
 
