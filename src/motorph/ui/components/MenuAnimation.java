@@ -19,21 +19,30 @@ public class MenuAnimation {
         int height = component.getPreferredSize().height;
         
         // Create an Animator with 300ms duration
-        Animator animator = new Animator (300, new TimingTargetAdapter(){
+        Animator animator = new Animator(300, new TimingTargetAdapter() {
             @Override
             public void timingEvent(float fraction) {
                 float f = show ? fraction : 1f - fraction;
-                layout.setComponentConstraints(component,"h " + height * f + "!");
+                int height = component.getPreferredSize().height;
+
+                // Avoid zero-height animation glitches
+                float animatedHeight = height * f;
+                if (animatedHeight < 1f) {
+                    animatedHeight = 1f;  // minimum to avoid invalid constraints
+                }
+
+                // Format to avoid scientific notation
+                String constraint = String.format("h %.2f!", animatedHeight);
+
+                layout.setComponentConstraints(component, constraint);
                 component.revalidate();
-              
+                item.repaint();
             }
-            
+
         });
         animator.setResolution(0);
         animator.setAcceleration(.5f);
-        animator.setDeceleration(0.5f);
+        animator.setDeceleration(.5f);
         animator.start();
-        
     }
-    
 }

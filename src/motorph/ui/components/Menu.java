@@ -1,8 +1,12 @@
 package motorph.ui.components;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
@@ -27,6 +31,7 @@ public class Menu extends JComponent {
           //Configure MigLayout: 1 column (wrap 1), fill horizontally, no vertical gap, small inset
           layout=new MigLayout ("wrap 1, fillx, gapy 0, inset 2", "fill");
           setLayout(layout);
+          setOpaque(true);
           
           
           for(int i=0; i<menuItems.length;i++){
@@ -91,7 +96,7 @@ public class Menu extends JComponent {
       }
       
       
-      private void hideMenu(MenuItem item, int index){
+    private void hideMenu(MenuItem item, int index){
       // create for loop to find the subMenu panel by index
         for(Component com:getComponents()) {
             if (com instanceof JPanel&&com.getName() !=null&&com.getName().equals(index+"")){
@@ -100,7 +105,14 @@ public class Menu extends JComponent {
                 break;
             } 
         }
-      }
-      
+    }
+    
+    @Override
+    protected void paintComponent(Graphics grphcs) {
+        Graphics2D g2 = (Graphics2D) grphcs.create();
+        g2.setColor(new Color(0, 66, 102));
+        g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+        super.paintComponent(grphcs);
+    }
     
 }

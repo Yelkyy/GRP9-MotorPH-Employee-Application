@@ -1,6 +1,16 @@
 package motorph.ui.components;
 
 import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 
 public class MenuItem extends JButton {
@@ -65,19 +75,28 @@ public class MenuItem extends JButton {
     
     private int subMenuIndex;
     private int length;
+    //  Submenu
     
+
     
     public MenuItem(String name, int index, boolean subMenuAble) {
         super(name);
-        this.index=index;
-        this.subMenuAble=subMenuAble;
+        this.index = index;
+        this.subMenuAble = subMenuAble;
+        setContentAreaFilled(false);
+        setForeground(new Color(230, 230, 230));
+        setHorizontalAlignment(SwingConstants.LEFT);
+        setBorder(new EmptyBorder(9, 10, 9, 10));
+        setIconTextGap(10);
     }
     
     
     public void initSubMenu(int subMenuIndex, int length) {
-        this.setSubMenuIndex(subMenuIndex);
-        this.setLength(length);
-        setContentAreaFilled(false);
+        this.subMenuIndex = subMenuIndex;
+        this.length = length;
+        setBorder(new EmptyBorder(9, 33, 9, 10));
+        setBackground(new Color(3, 47, 71));
+        setOpaque(true);
     }
     
 }
