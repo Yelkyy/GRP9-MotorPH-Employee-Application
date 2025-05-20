@@ -12,7 +12,8 @@ Implementation Notes:
 
   - Developed a Dashboard, which currently includes a menu with dropdown menu items. This provides the basic structure for future functionality but is not yet fully implemented.
 
-![image](https://github.com/user-attachments/assets/6775e03f-28b3-4f75-bc18-115837fac9a4)
+![image](https://github.com/user-attachments/assets/1d9bf4e2-d8e3-48a8-9670-63d8e80787cb)
+
 
 
 
