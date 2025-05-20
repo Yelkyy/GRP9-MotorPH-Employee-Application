@@ -1,0 +1,39 @@
+package motorph.ui.components;
+
+import java.awt.Component;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
+
+
+
+/**
+ * This class handles the animation for showing and hiding submenus in the menu.
+ * It ensures that submenus are not repeatedly displayed when clicked multiple times.
+ */
+public class MenuAnimation {
+    
+    public static void showMenu(Component component, MenuItem item, MigLayout layout, boolean show){
+        // Get the preferred height of the component to animate towards
+        int height = component.getPreferredSize().height;
+        
+        // Create an Animator with 300ms duration
+        Animator animator = new Animator (300, new TimingTargetAdapter(){
+            @Override
+            public void timingEvent(float fraction) {
+                float f = show ? fraction : 1f - fraction;
+                layout.setComponentConstraints(component,"h " + height * f + "!");
+                component.revalidate();
+              
+            }
+            
+        });
+        animator.setResolution(0);
+        animator.setAcceleration(.5f);
+        animator.setDeceleration(0.5f);
+        animator.start();
+        
+    }
+    
+}

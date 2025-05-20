@@ -1,11 +1,11 @@
 package motorph.ui.main;
 
-import motorph.ui.LoginFrame;
+import motorph.ui.LoginScreen;
 
-public class Login {
+public class App {
     
     public static void main(String[] args){
-        LoginFrame LoginF = new LoginFrame();
+        LoginScreen LoginF = new LoginScreen();
         LoginF.setVisible(true);
         LoginF.pack();
         LoginF.setLocationRelativeTo(null);
