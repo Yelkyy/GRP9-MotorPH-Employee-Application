@@ -1,77 +1,57 @@
 {
-    "type": "java",
-    "request": "launch",
-    "name": "Launch MotorPH",
-    "mainClass": "App",
-    "projectName": "MotorPH",
-    "classPaths": [
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "motorph.ui.main.App",
+      "projectName": "MotorPH Employee Application_1190f2d3",
+      "classPaths": [
         "bin",
+        "src",
         "lib/opencsv-5.10.jar",
         "lib/commons-lang3-3.17.0.jar"
-    ],
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Login",
-            "request": "launch",
-            "mainClass": "motorph.ui.Login",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "Dashboard",
-            "request": "launch",
-            "mainClass": "motorph.ui.main.Dashboard",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "Login",
-            "request": "launch",
-            "mainClass": "motorph.ui.main.Login",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "motorph.ui.main.Main",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "motorph.ui.Main",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "ui.Main",
-            "projectName": "MotorPH Employee Application_1190f2d3"
-        },
-        {
-            "type": "java",
-            "name": "MainNavigationHomePanel_ADMIN",
-            "request": "launch",
-            "mainClass": "gui.MainNavigationHomePanel_ADMIN",
-            "projectName": "MotorPH_db4caa08"
-        },
-        {
-            "type": "java",
-            "name": "test",
-            "request": "launch",
-            "mainClass": "test",
-            "projectName": "MotorPH_db4caa08"
-        },
-        {
-            "type": "java",
-            "name": "LoginFrame",
-            "request": "launch",
-            "mainClass": "gui.LoginFrame",
-            "projectName": "MotorPH_db4caa08"
-        }
-    ]
+      ]
+    },
+    {
+      "type": "java",
+      "name": "Login",
+      "request": "launch",
+      "mainClass": "motorph.ui.Login",
+      "projectName": "MotorPH Employee Application_1190f2d3",
+      "classPaths": [
+        "bin",
+        "src",
+        "lib/opencsv-5.10.jar",
+        "lib/commons-lang3-3.17.0.jar"
+      ]
+    },
+    {
+      "type": "java",
+      "name": "Dashboard",
+      "request": "launch",
+      "mainClass": "motorph.ui.main.Dashboard",
+      "projectName": "MotorPH Employee Application_1190f2d3",
+      "classPaths": [
+        "bin",
+        "src",
+        "lib/opencsv-5.10.jar",
+        "lib/commons-lang3-3.17.0.jar"
+      ]
+    },
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "motorph.ui.main.Main",
+      "projectName": "MotorPH Employee Application_1190f2d3",
+      "classPaths": [
+        "bin",
+        "src",
+        "lib/opencsv-5.10.jar",
+        "lib/commons-lang3-3.17.0.jar"
+      ]
+    }
+  ]
 }
