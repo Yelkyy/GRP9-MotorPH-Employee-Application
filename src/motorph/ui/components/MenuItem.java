@@ -12,7 +12,10 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-
+/**
+ * MenuItem represents both main and sub-menu buttons in the dashboard sidebar menu.
+ * It supports styling for active submenu items and identifies its position in the menu structure.
+ */
 public class MenuItem extends JButton {
 
     /**
@@ -78,11 +81,19 @@ public class MenuItem extends JButton {
     //  Submenu
     
 
-    
+    /**
+     * Constructs a MenuItem with a name, index, and submenu capability.
+     * 
+     * @param name         Display name of the menu item
+     * @param index        Index of the item in the main menu array
+     * @param subMenuAble  True if this item can have submenus
+     */
     public MenuItem(String name, int index, boolean subMenuAble) {
         super(name);
         this.index = index;
         this.subMenuAble = subMenuAble;
+        
+        // Visual styling
         setContentAreaFilled(false);
         setForeground(new Color(230, 230, 230));
         setHorizontalAlignment(SwingConstants.LEFT);
@@ -90,7 +101,12 @@ public class MenuItem extends JButton {
         setIconTextGap(10);
     }
     
-    
+    /**
+     * Initializes this button as a submenu item with specific indentation and background color.
+     * 
+     * @param subMenuIndex Index of this submenu item within its parent
+     * @param length       Total number of submenu items
+     */
     public void initSubMenu(int subMenuIndex, int length) {
         this.subMenuIndex = subMenuIndex;
         this.length = length;

@@ -14,30 +14,42 @@ import motorph.ui.Dashboard;
 import motorph.ui.components.EmployeePanel;
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Menu component for the MotorPH Dashboard.
+ * Dynamically generates main and sub-menu items and handles panel switching within the UI.
+ */
 public class Menu extends JComponent {
 
     private MigLayout layout;
     private JPanel mainPanel;
 
-    // method thats allowing Dashboard to pass in the body panel
+    /**
+     * Allows the Dashboard to inject the main display panel (body) for content swapping.
+     * @param panel the body panel of the Dashboard where dynamic content is rendered
+     */
     public void setMainPanel(JPanel panel) {
         this.mainPanel = panel;
     }
 
-    // Here is the main menu and their submenus
+    // Menu structure: {Main Menu, SubItem1, SubItem2...}
     private String[][] menuItems = new String[][] {
             { "Dashboard" },
             { "Employee", "Employee List", "Add Employee" },
-            { "Payroll", "View Payroll" }
+            { "Payroll", "View Payroll" },
+            
+            
     };
-
+    
+    /**
+     * Constructs the Menu and initializes layout and items.
+     */
     public Menu() {
-        init(); // initializing the menu layout and items
+        init();
     }
-
+    /**
+     * Initializes the menu layout and populates it with menu items.
+     */
     private void init() {
-        // Configure MigLayout: 1 column (wrap 1), fill horizontally, no vertical gap,
-        // small inset
         layout = new MigLayout("wrap 1, fillx, gapy 0, inset 2", "fill");
         setLayout(layout);
         setOpaque(true);
@@ -47,26 +59,36 @@ public class Menu extends JComponent {
         }
 
     }
-
+    /**
+     * Adds a main menu item and optionally links its sub-items.
+     *
+     * @param menuName the name of the main menu item
+     * @param index the index in the menuItems array
+     */
     private void addMenu(String menuName, int index) {
         int length = menuItems[index].length;
-
         MenuItem item = new MenuItem(menuName, index, length > 1);
 
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (length > 1) {
-                    // used condition by show the menu if menu item is not selected
                     if (!item.isSelected()) {
                         item.setSelected(true);
                         addSubMenu(item, index, length, getComponentZOrder(item));
                     } else {
-                        // hide menu
                         hideMenu(item, index);
                         item.setSelected(false);
                     }
-
+                } else {
+                    if ("Dashboard".equals(menuName)) {
+                    if (mainPanel != null) {
+                        mainPanel.removeAll();
+                        mainPanel.add(new HomePanel());
+                        mainPanel.revalidate();
+                        mainPanel.repaint();
+                    }
+                    }
                 }
             }
         });
@@ -76,14 +98,19 @@ public class Menu extends JComponent {
         revalidate();
         repaint();
     }
-
+    /**
+     * Adds sub-menu items under a main menu item.
+     *
+     * @param item the parent MenuItem
+     * @param index index of the parent in menuItems
+     * @param length number of submenu items
+     * @param indexZorder index to insert the submenu panel at
+     */
     private void addSubMenu(MenuItem item, int index, int length, int indexZorder) {
-        // Panel to hold the submenu items
         JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, gapy 0, inset 2", "fill"));
-        panel.setName(index + ""); // Name the panel by its index to identify it later
+        panel.setName(index + "");
         panel.setOpaque(false); // Transparent background
-
-        // Add submenu items to the panel (skip the first item since it's the main menu)
+        
         for (int i = 1; i < length; i++) {
             MenuItem subItem = new MenuItem(menuItems[index][i], i, false);
             subItem.initSubMenu(i, length);
@@ -101,19 +128,24 @@ public class Menu extends JComponent {
                         mainPanel.revalidate();
                         mainPanel.repaint();
                     }
+                    // Additional submenu cases can be added here
                 }
-            }); // ----------end.
-
+            }); 
         }
-        // Initially set panel height to 0 (for animation)
-        add(panel, "h 0!", indexZorder + 1); // set the panel height to 0 because I used animation to show
+        
+        add(panel, "h 0!", indexZorder + 1); // Start collapsed (0 height)
         revalidate();
         repaint();
 
-        // Animate showing the submenu panel
-        MenuAnimation.showMenu(panel, item, layout, true);
+        MenuAnimation.showMenu(panel, item, layout, true); // Animate showing the submenu panel
     }
-
+    
+    /**
+     * Hides a submenu panel.
+     *
+     * @param item the main menu item
+     * @param index index of the main menu item
+     */
     private void hideMenu(MenuItem item, int index) {
         // create for loop to find the subMenu panel by index
         for (Component com : getComponents()) {
@@ -124,7 +156,10 @@ public class Menu extends JComponent {
             }
         }
     }
-
+    
+    /**
+     * Paints the background of the menu component.
+     */
     @Override
     protected void paintComponent(Graphics grphcs) {
         Graphics2D g2 = (Graphics2D) grphcs.create();

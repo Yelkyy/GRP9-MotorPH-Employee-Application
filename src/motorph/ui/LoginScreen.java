@@ -19,7 +19,6 @@ public class LoginScreen extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         right = new javax.swing.JPanel();
         companylogo = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         left = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -48,37 +47,25 @@ public class LoginScreen extends javax.swing.JFrame {
         right.setName(""); // NOI18N
         right.setPreferredSize(new java.awt.Dimension(400, 500));
 
-        companylogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/logoNoBG.png"))); // NOI18N
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("COMPANY NAME");
+        companylogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/logoResize.png"))); // NOI18N
 
         javax.swing.GroupLayout rightLayout = new javax.swing.GroupLayout(right);
         right.setLayout(rightLayout);
         rightLayout.setHorizontalGroup(
             rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rightLayout.createSequentialGroup()
-                .addGap(53, 53, 53)
-                .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(companylogo)
-                    .addGroup(rightLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jLabel4)))
-                .addContainerGap(57, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
+                .addComponent(companylogo)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         rightLayout.setVerticalGroup(
             rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(companylogo, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addComponent(companylogo, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 52, Short.MAX_VALUE))
         );
 
         jPanel1.add(right);
-        right.setBounds(0, 0, 410, 500);
+        right.setBounds(0, 0, 400, 500);
 
         left.setBackground(new java.awt.Color(255, 255, 255));
         left.setMaximumSize(new java.awt.Dimension(400, 500));
@@ -196,7 +183,6 @@ public class LoginScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
