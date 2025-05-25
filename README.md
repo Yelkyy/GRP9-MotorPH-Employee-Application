@@ -1,28 +1,21 @@
-## Change Log
-✅ Change Request: MPHCR01 
-📅 Date Implemented: May 19, 2025
+# MotorPH Payroll Management System
 
-Description: Converted the console-based MotorPH Employee App to a working GUI-based application.
+**MotorPH Payroll Management System** is a desktop application designed to streamline payroll processing and employee management for MotorPH. The system provides a user-friendly interface to manage employee data, view pay periods, and support HR administrative tasks efficiently.
 
-Implementation Notes:
+---
 
-  - Started with the LoginFrame, where the employee is required to enter their email and password.
+## Overview
 
-  ![image](https://github.com/user-attachments/assets/a9bb8956-cb60-42be-bd31-0b0a4edb1a99)
+This project delivers a comprehensive payroll management solution featuring:
 
-  - Developed a Dashboard, which currently includes a menu with dropdown menu items. This provides the basic structure for future functionality but is not yet fully implemented.
+- Dynamic display of current pay periods based on system date.
+- Interactive calendar widget for date-related navigation.
+- Employee data management with pagination for handling large datasets.
+- Search functionality for quick retrieval of employee records.
+- Clean, consistent UI design aligned with MotorPH branding.
+- Placeholder support for upcoming features such as adding and viewing detailed employee profiles.
+- Efficient integration with backend data handling for employee records.
 
-  ![image](https://github.com/user-attachments/assets/1d9bf4e2-d8e3-48a8-9670-63d8e80787cb)
+---
 
-  - Integrated Employee List functionality in the Dashboard, allowing employee search by ID with exception handling.
-
-  ![image](https://github.com/user-attachments/assets/123b96fe-8f87-460b-ae3f-97c444581d61)
-  ![image](https://github.com/user-attachments/assets/4d636bb3-b1ca-4e78-8bcf-ac6d5e6a2ed9)
-
-
-
-
-
-
-
-
+This implementation follows the requirements outlined in the MPHCR01 specification, covering key functional components of the MotorPH Payroll Management System.
