@@ -19,3 +19,13 @@ This project delivers a comprehensive payroll management solution featuring:
 ---
 
 This implementation follows the requirements outlined in the MPHCR01 specification, covering key functional components of the MotorPH Payroll Management System.
+
+---
+
+## How to Download and Run
+
+1. Click **Code** button on this repository page.
+2. Open the project in your IDE/editor and run the application.
+3. When the Login Screen appears, use the following credentials to log in:
+   - **Email:** `admin123@gmail.com`
+   - **Password:** `admin`
