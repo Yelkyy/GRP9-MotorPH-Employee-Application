@@ -1,6 +1,6 @@
+package motorph.ui.main;
 // Main class to launch the MotorPH application.
 // This initializes and displays the login screen when the application starts.
-package motorph.ui.main;
 
 import motorph.ui.LoginScreen;
 
