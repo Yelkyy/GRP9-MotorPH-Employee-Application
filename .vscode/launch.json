@@ -6,12 +6,20 @@
       "name": "App",
       "request": "launch",
       "mainClass": "motorph.ui.main.App",
+      "projectName": "GRP9-MotorPH-Employee-Application_d4a488cf"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "motorph.ui.main.App",
       "projectName": "MotorPH Employee Application_1190f2d3",
       "classPaths": [
         "bin",
         "src",
         "lib/opencsv-5.10.jar",
-        "lib/commons-lang3-3.17.0.jar"
+        "lib/commons-lang3-3.17.0.jar",
+        "lib/jcalendar-1.4.jar"
       ]
     },
     {
@@ -24,7 +32,8 @@
         "bin",
         "src",
         "lib/opencsv-5.10.jar",
-        "lib/commons-lang3-3.17.0.jar"
+        "lib/commons-lang3-3.17.0.jar",
+        "lib/jcalendar-1.4.jar"
       ]
     },
     {
@@ -37,7 +46,8 @@
         "bin",
         "src",
         "lib/opencsv-5.10.jar",
-        "lib/commons-lang3-3.17.0.jar"
+        "lib/commons-lang3-3.17.0.jar",
+        "lib/jcalendar-1.4.jar"
       ]
     },
     {
@@ -50,7 +60,8 @@
         "bin",
         "src",
         "lib/opencsv-5.10.jar",
-        "lib/commons-lang3-3.17.0.jar"
+        "lib/commons-lang3-3.17.0.jar",
+        "lib/jcalendar-1.4.jar"
       ]
     }
   ]
