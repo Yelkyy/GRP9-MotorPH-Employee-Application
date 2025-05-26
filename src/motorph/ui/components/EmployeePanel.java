@@ -2,6 +2,7 @@ package motorph.ui.components;
 
 
 import motorph.model.EmployeeDetails;
+import motorph.ui.components.DisplayEmployeeInfo;
 import motorph.repository.DataHandler;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -13,12 +14,13 @@ import javax.swing.table.DefaultTableModel;
 public class EmployeePanel extends javax.swing.JPanel {
    // Pagination Variables and Employee List Setup
     private int currentPage = 1;
-    private int rowsPerPage = 25;  //  Number of employees to display per page in the table
+    private int rowsPerPage = 20;  //  Number of employees to display per page in the table
     private List<EmployeeDetails> employees;
     
     
     public EmployeePanel(String name) {
         initComponents();
+
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -27,7 +29,24 @@ public class EmployeePanel extends javax.swing.JPanel {
             employeeListTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         
-        loadEmployeesToTable();                          
+        employeeListTable.getColumnModel().getColumn(7).setCellRenderer(new MyRender());
+        
+        loadEmployeesToTable();
+        
+        employeeListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt){
+                int row = employeeListTable.rowAtPoint(evt.getPoint());
+                int col = employeeListTable.columnAtPoint(evt.getPoint());
+                
+                if (col == 7 && row >= 0) {
+                javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(EmployeePanel.this);
+                DisplayEmployeeInfo displayDialog = new DisplayEmployeeInfo(parentFrame);            
+                displayDialog.setVisible(true);
+                }
+            }
+        }
+            );
     }
     /**
      * Loads all employee records from the data source and displays the first page of results in the table.
@@ -57,7 +76,8 @@ public class EmployeePanel extends javax.swing.JPanel {
                 emp.getSssNumber(),
                 emp.getPhilhealthNumber(),
                 emp.getTinNumber(),
-                emp.getPagIbigNumber()
+                emp.getPagIbigNumber(),
+                "View"
             });
         }
 
@@ -66,7 +86,10 @@ public class EmployeePanel extends javax.swing.JPanel {
         lblPageInfo.setText("Page " + currentPage + " of " + totalPages);
         btnPrev.setEnabled(currentPage > 1);
         btnNext.setEnabled(currentPage < totalPages);
+        
+
     }
+
 
     
     
@@ -84,7 +107,6 @@ public class EmployeePanel extends javax.swing.JPanel {
         boarder1 = new javax.swing.JSeparator();
         addEmpButton = new javax.swing.JButton();
         lblSubTitle = new javax.swing.JLabel();
-        viewEmpBtn = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         lblPageInfo = new javax.swing.JLabel();
@@ -100,20 +122,20 @@ public class EmployeePanel extends javax.swing.JPanel {
         employeeListTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         employeeListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Employee #", "Last Name", "First Name", "SSS #", "PhilHealth #", "TIN #", "Pag-IBIG #"
+                "Employee #", "Last Name", "First Name", "SSS #", "PhilHealth #", "TIN #", "Pag-IBIG #", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -181,13 +203,6 @@ public class EmployeePanel extends javax.swing.JPanel {
         lblSubTitle.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblSubTitle.setText("Active Employees");
 
-        viewEmpBtn.setText("View Employee");
-        viewEmpBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewEmpBtnActionPerformed(evt);
-            }
-        });
-
         btnPrev.setText("<");
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -208,30 +223,29 @@ public class EmployeePanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(boarder1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1003, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1003, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(viewEmpBtn)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnPrev)
+                            .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblPageInfo)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnNext)
-                            .addGap(5, 5, 5))))
+                            .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(743, 743, 743)
+                                .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnPrev)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblPageInfo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnNext)
+                                .addGap(5, 5, 5)))))
                 .addContainerGap(24, Short.MAX_VALUE))
-            .addComponent(boarder1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -252,7 +266,6 @@ public class EmployeePanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewEmpBtn)
                     .addComponent(btnPrev)
                     .addComponent(btnNext)
                     .addComponent(lblPageInfo))
@@ -280,7 +293,7 @@ public class EmployeePanel extends javax.swing.JPanel {
 
         getAccessibleContext().setAccessibleName("");
     }// </editor-fold>//GEN-END:initComponents
-    
+        
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
 
         String empNumberInput = searchBar.getText().trim();
@@ -318,7 +331,8 @@ public class EmployeePanel extends javax.swing.JPanel {
                     emp.getSssNumber(),
                     emp.getPhilhealthNumber(),
                     emp.getTinNumber(),
-                    emp.getPagIbigNumber()
+                    emp.getPagIbigNumber(),
+                    "View"
                 });
                 found = true;
                 break; // Stop searching once the matching employee ID is found and displayed.
@@ -365,13 +379,6 @@ public class EmployeePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
-    private void viewEmpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewEmpBtnActionPerformed
-        JOptionPane.showMessageDialog(this, 
-        "The View Employee feature is currently under development and will be available soon. Thank you for your patience!", 
-        "Feature Under Development", 
-        JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_viewEmpBtnActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEmpButton;
     private javax.swing.JSeparator boarder1;
@@ -384,6 +391,5 @@ public class EmployeePanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblSubTitle;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
-    private javax.swing.JButton viewEmpBtn;
     // End of variables declaration//GEN-END:variables
 }

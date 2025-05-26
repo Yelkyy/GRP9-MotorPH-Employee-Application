@@ -13,6 +13,10 @@ public class LoginScreen extends javax.swing.JFrame {
     public LoginScreen() {
         initComponents();
         
+        // TODO: Remove auto-login before release
+        //new Dashboard().setVisible(true);
+        //dispose(); // TODO: Remove auto-login before release
+
         adminUser = new User("admin123@gmail.com", "admin");
     }
 

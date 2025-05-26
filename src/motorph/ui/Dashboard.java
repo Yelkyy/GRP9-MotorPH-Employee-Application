@@ -46,6 +46,12 @@ public class Dashboard extends javax.swing.JFrame {
 
         jScrollPane2.setBackground(new java.awt.Color(0, 66, 102));
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane2.setForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        menu1.setBackground(new java.awt.Color(3, 47, 71));
+        menu1.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setViewportView(menu1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

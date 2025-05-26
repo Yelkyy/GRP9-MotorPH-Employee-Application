@@ -111,7 +111,9 @@ public class MenuItem extends JButton {
         this.subMenuIndex = subMenuIndex;
         this.length = length;
         setBorder(new EmptyBorder(9, 33, 9, 10));
-        setBackground(new Color(3, 47, 71));
+        setBackground(javax.swing.UIManager.getColor("MenuItem.background"));
+        setForeground(javax.swing.UIManager.getColor("MenuItem.foreground"));
+        setForeground(Color.WHITE);
         setOpaque(true);
     }
     

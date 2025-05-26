@@ -10,6 +10,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import motorph.ui.Dashboard;
 import motorph.ui.components.EmployeePanel;
 import net.miginfocom.swing.MigLayout;
@@ -115,6 +116,7 @@ public class Menu extends JComponent {
             MenuItem subItem = new MenuItem(menuItems[index][i], i, false);
             subItem.initSubMenu(i, length);
             panel.add(subItem);
+            panel.setBackground(UIManager.getColor("PopupMenu.background"));
 
             // here ill add a click event
             subItem.addActionListener(new ActionListener() {
