@@ -15,10 +15,10 @@ public class App {
      */
     public static void main(String[] args){
       
-        try {
-        UIManager.setLookAndFeel(new FlatLightLaf());
+        try {          
+            UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
         
         // Create an instance of the login screen

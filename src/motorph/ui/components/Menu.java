@@ -36,8 +36,9 @@ public class Menu extends JComponent {
     // Menu structure: {Main Menu, SubItem1, SubItem2...}
     private String[][] menuItems = new String[][] {
             { "Dashboard" },
-            { "Employee", "Employee List" },
-            { "Payroll", "View Payroll" },
+            { "Employee" },
+            { "Attendance" },
+            { "Payroll" },
             
             
     };
@@ -69,108 +70,44 @@ public class Menu extends JComponent {
      * @param index the index in the menuItems array
      */
     private void addMenu(String menuName, int index) {
-        int length = menuItems[index].length;
-        MenuItem item = new MenuItem(menuName, index, length > 1);
+        MenuItem item = new MenuItem(menuName, index);
 
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (length > 1) {
-                    if (!item.isSelected()) {
-                        item.setSelected(true);
-                        addSubMenu(item, index, length, getComponentZOrder(item));
-                    } else {
-                        hideMenu(item, index);
-                        item.setSelected(false);
+                if (mainPanel != null) {
+                    mainPanel.removeAll();
+
+                    switch (menuName) {
+                        case "Dashboard":
+                            mainPanel.add(new HomePanel());
+                            break;
+                        case "Employee":
+                            mainPanel.add(new EmployeePanel("Employee List"));
+                            break;
+                        case "Attendance":
+                            UnderMaintenance atttendancePanel = new UnderMaintenance();
+                            atttendancePanel.setFeatureName("Attendance");
+                            mainPanel.add(atttendancePanel);
+                            break;
+                        case "Payroll":
+                            UnderMaintenance payrollPanel = new UnderMaintenance();
+                            payrollPanel.setFeatureName("Payroll");
+                            mainPanel.add(payrollPanel);
+                            break;
                     }
-                } else {
-                    if ("Dashboard".equals(menuName)) {
-                    if (mainPanel != null) {
-                        mainPanel.removeAll();
-                        mainPanel.add(new HomePanel());
-                        mainPanel.revalidate();
-                        mainPanel.repaint();
-                    }
-                    }
+
+                    mainPanel.revalidate();
+                    mainPanel.repaint();
                 }
             }
         });
 
-        // Add main menu item to the layout
         add(item);
         revalidate();
         repaint();
     }
-    /**
-     * Adds sub-menu items under a main menu item.
-     *
-     * @param item the parent MenuItem
-     * @param index index of the parent in menuItems
-     * @param length number of submenu items
-     * @param indexZorder index to insert the submenu panel at
-     */
-    private void addSubMenu(MenuItem item, int index, int length, int indexZorder) {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, gapy 0, inset 2", "fill"));
-        panel.setName(index + "");
-        panel.setOpaque(false); // Transparent background
-        
-        for (int i = 1; i < length; i++) {
-            MenuItem subItem = new MenuItem(menuItems[index][i], i, false);
-            subItem.initSubMenu(i, length);
-            panel.add(subItem);
-            panel.setBackground(UIManager.getColor("PopupMenu.background"));
 
-            subItem.addActionListener(new ActionListener() {
-                @Override
-                // Handle "Employee List" click
-                public void actionPerformed(ActionEvent e) {
-                    if (subItem.getText().equals("Employee List")) {
-                        // Set the EmployeePanel as the new content for the main body
-                        mainPanel.removeAll();
-                        mainPanel.add(new EmployeePanel("Employee List"));
-                        mainPanel.revalidate();
-                        mainPanel.repaint();
-                    }
-                // Handle "View Payroll" click
-                    else if (subItem.getText().equals("View Payroll")){
-                        JOptionPane.showMessageDialog(
-                SwingUtilities.getWindowAncestor(Menu.this),
-                "The View Payroll feature is currently under maintenance.\nPlease check back later.",
-                "Feature Under Maintenance",
-                JOptionPane.INFORMATION_MESSAGE
-                        );
-                    }
-                }
-            }); 
-        }
-        
-        add(panel, "h 0!", indexZorder + 1); // Start collapsed (0 height)
-        revalidate();
-        repaint();
-
-        MenuAnimation.showMenu(panel, item, layout, true); // Animate showing the submenu panel
-    }
-    
-    /**
-     * Hides a submenu panel.
-     *
-     * @param item the main menu item
-     * @param index index of the main menu item
-     */
-    private void hideMenu(MenuItem item, int index) {
-        // create for loop to find the subMenu panel by index
-        for (Component com : getComponents()) {
-            if (com instanceof JPanel && com.getName() != null && com.getName().equals(index + "")) {
-                com.setName(null); // Clear name to prevent duplicate processing
-                MenuAnimation.showMenu(com, item, layout, false); // Animate hiding
-                break;
-            }
-        }
-    }
-    
-    /**
-     * Paints the background of the menu component.
-     */
     @Override
     protected void paintComponent(Graphics grphcs) {
         Graphics2D g2 = (Graphics2D) grphcs.create();
@@ -178,5 +115,4 @@ public class Menu extends JComponent {
         g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         super.paintComponent(grphcs);
     }
-
 }

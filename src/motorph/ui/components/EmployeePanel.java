@@ -49,6 +49,7 @@ public class EmployeePanel extends javax.swing.JPanel {
             }
         }
             );
+        
     }
     /**
      * Loads all employee records from the data source and displays the first page of results in the table.
@@ -148,6 +149,7 @@ public class EmployeePanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        employeeListTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane1.setViewportView(employeeListTable);
         if (employeeListTable.getColumnModel().getColumnCount() > 0) {
             employeeListTable.getColumnModel().getColumn(0).setResizable(false);
@@ -381,6 +383,8 @@ public class EmployeePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
+    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEmpButton;
     private javax.swing.JSeparator boarder1;

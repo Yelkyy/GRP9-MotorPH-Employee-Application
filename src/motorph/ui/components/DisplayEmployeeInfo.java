@@ -30,6 +30,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         setName("displayEmpFrame"); // NOI18N
         setResizable(false);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setMaximumSize(new java.awt.Dimension(1054, 720));
         jPanel1.setMinimumSize(new java.awt.Dimension(1054, 720));
         jPanel1.setPreferredSize(new java.awt.Dimension(1054, 720));
