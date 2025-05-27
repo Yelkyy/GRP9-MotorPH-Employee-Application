@@ -99,6 +99,7 @@ public class MenuItem extends JButton {
         setHorizontalAlignment(SwingConstants.LEFT);
         setBorder(new EmptyBorder(9, 10, 9, 10));
         setIconTextGap(10);
+        setFont(CustomFont.getExtendedRegular(14f));
     }
     
     /**

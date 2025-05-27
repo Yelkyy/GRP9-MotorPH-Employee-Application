@@ -42,8 +42,8 @@
               <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
               <Component id="todayLeaveBox2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-              <Component id="payPeriodBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
+              <Component id="payPeriodBox" min="-2" pref="251" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -152,7 +152,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="24" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="35"/>
+            <Property name="text" type="java.lang.String" value="34"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -185,9 +185,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="payPeriodNum" pref="199" max="32767" attributes="0"/>
+                      <Component id="payPeriodNum" pref="220" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="payPeriodTxt" min="-2" max="-2" attributes="0"/>
+                          <Component id="payPeriodText" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -199,7 +199,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                  <Component id="payPeriodTxt" min="-2" pref="30" max="-2" attributes="0"/>
+                  <Component id="payPeriodText" min="-2" pref="30" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="payPeriodNum" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -208,7 +208,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="payPeriodTxt">
+        <Component class="javax.swing.JLabel" name="payPeriodText">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="0"/>
@@ -254,8 +254,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="todayLeaveNum2" min="-2" max="-2" attributes="0"/>
-                      <Component id="totalEmpText2" min="-2" max="-2" attributes="0"/>
+                      <Component id="todayLeaveNum" min="-2" max="-2" attributes="0"/>
+                      <Component id="totalLeaveText" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="129" max="32767" attributes="0"/>
               </Group>
@@ -265,16 +265,16 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                  <Component id="totalEmpText2" min="-2" pref="30" max="-2" attributes="0"/>
+                  <Component id="totalLeaveText" min="-2" pref="30" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="todayLeaveNum2" min="-2" max="-2" attributes="0"/>
+                  <Component id="todayLeaveNum" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="41" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="totalEmpText2">
+        <Component class="javax.swing.JLabel" name="totalLeaveText">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="0"/>
@@ -282,7 +282,7 @@
             <Property name="text" type="java.lang.String" value="Today Leave"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="todayLeaveNum2">
+        <Component class="javax.swing.JLabel" name="todayLeaveNum">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="24" style="1"/>

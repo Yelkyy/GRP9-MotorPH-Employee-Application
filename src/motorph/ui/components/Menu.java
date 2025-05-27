@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -35,7 +36,7 @@ public class Menu extends JComponent {
     // Menu structure: {Main Menu, SubItem1, SubItem2...}
     private String[][] menuItems = new String[][] {
             { "Dashboard" },
-            { "Employee", "Employee List", "Add Employee" },
+            { "Employee", "Employee List" },
             { "Payroll", "View Payroll" },
             
             
@@ -47,6 +48,7 @@ public class Menu extends JComponent {
     public Menu() {
         init();
     }
+    
     /**
      * Initializes the menu layout and populates it with menu items.
      */
@@ -118,11 +120,10 @@ public class Menu extends JComponent {
             panel.add(subItem);
             panel.setBackground(UIManager.getColor("PopupMenu.background"));
 
-            // here ill add a click event
             subItem.addActionListener(new ActionListener() {
                 @Override
+                // Handle "Employee List" click
                 public void actionPerformed(ActionEvent e) {
-                    // Handle "Employee List" click
                     if (subItem.getText().equals("Employee List")) {
                         // Set the EmployeePanel as the new content for the main body
                         mainPanel.removeAll();
@@ -130,7 +131,15 @@ public class Menu extends JComponent {
                         mainPanel.revalidate();
                         mainPanel.repaint();
                     }
-                    // Additional submenu cases can be added here
+                // Handle "View Payroll" click
+                    else if (subItem.getText().equals("View Payroll")){
+                        JOptionPane.showMessageDialog(
+                SwingUtilities.getWindowAncestor(Menu.this),
+                "The View Payroll feature is currently under maintenance.\nPlease check back later.",
+                "Feature Under Maintenance",
+                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
                 }
             }); 
         }
