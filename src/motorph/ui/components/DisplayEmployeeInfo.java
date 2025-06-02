@@ -1,7 +1,10 @@
 package motorph.ui.components;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import motorph.model.EmployeeDetails;
 import motorph.repository.DataHandler;
 
@@ -9,7 +12,7 @@ import motorph.repository.DataHandler;
 
 public class DisplayEmployeeInfo extends javax.swing.JDialog {
     
-    
+    List<JTextField> empInfoFieldList;
 
     public DisplayEmployeeInfo(JFrame parent, String employeeNumber) {
         super(parent, "Employee Info", true);
@@ -18,6 +21,35 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         applyCustomFont();
         setLocationRelativeTo(parent);       
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        
+        empInfoFieldList = Arrays.asList(
+                empNum,
+                firstName,
+                lastName,
+                birthday,
+                address,
+                phoneNum,
+                sssNum,
+                philHealthNum,
+                tinNum,
+                pagIbigNum,
+                empStatus,
+                empPosition,
+                empSupervisor,
+                empBasicSalary,
+                empRiceSubsidy,
+                empPhoneAllwc,
+                empClothingAllwc,
+                empSemiMonthlyRate,
+                empHourlyRate
+        );
+        
+        for (JTextField field : empInfoFieldList) {
+            field.setEditable(false);
+            field.setBackground(new java.awt.Color(240, 240, 240));
+            field.setFocusable(false);
+        }
         
         loadEmployeeDetails(employeeNumber);
         pack();
@@ -105,6 +137,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         empSemiMonthlyRate = new javax.swing.JTextField();
         empHourlyRate = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
+        deleteEmpButton = new javax.swing.JButton();
         editEmpButton = new javax.swing.JButton();
 
         setTitle("Employee Info");
@@ -273,7 +306,17 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
 
         jLabel21.setText("Semi-Monthly Rate:");
 
-        editEmpButton.setBackground(new java.awt.Color(95, 182, 199));
+        deleteEmpButton.setBackground(new java.awt.Color(153, 0, 0));
+        deleteEmpButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteEmpButton.setText("Delete Employee");
+        deleteEmpButton.setBorder(null);
+        deleteEmpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteEmpButtonActionPerformed(evt);
+            }
+        });
+
+        editEmpButton.setBackground(new java.awt.Color(0, 153, 0));
         editEmpButton.setForeground(new java.awt.Color(255, 255, 255));
         editEmpButton.setText("Edit Employee");
         editEmpButton.setBorder(null);
@@ -338,7 +381,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                        .addComponent(empStatus))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -375,6 +418,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(deleteEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
@@ -450,8 +495,10 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                             .addComponent(empHourlyRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20))))
                 .addGap(23, 23, 23)
-                .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deleteEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -462,7 +509,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 517, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -542,8 +589,22 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_empHourlyRateActionPerformed
 
-    private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed
+    private void deleteEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmpButtonActionPerformed
+        JOptionPane.showMessageDialog(
+            this,
+            "⚠️ Delete Employee is still under maintenance.",
+            "Notice",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }//GEN-LAST:event_deleteEmpButtonActionPerformed
 
+    private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed
+        JOptionPane.showMessageDialog(
+            this,
+            "⚠️ Edit Employee is still under maintenance.",
+            "Notice",
+            JOptionPane.INFORMATION_MESSAGE
+        );
     }//GEN-LAST:event_editEmpButtonActionPerformed
 
     private void applyCustomFont() {
@@ -553,6 +614,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField address;
     private javax.swing.JTextField birthday;
+    private javax.swing.JButton deleteEmpButton;
     private javax.swing.JButton editEmpButton;
     private javax.swing.JTextField empBasicSalary;
     private javax.swing.JTextField empClothingAllwc;
