@@ -9,7 +9,7 @@ import motorph.repository.DataHandler;
 import java.util.ArrayList;
 
 public class EmployeeService {
-
+    
     // This method displays a list of all employees.
     public static void displayAllEmployees() {
         // Retrieve employee details from the data handler (e.g., from CSV or database)

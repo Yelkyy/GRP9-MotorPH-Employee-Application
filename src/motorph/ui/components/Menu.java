@@ -86,14 +86,10 @@ public class Menu extends JComponent {
                             mainPanel.add(new EmployeePanel("Employee List"));
                             break;
                         case "Attendance":
-                            UnderMaintenance atttendancePanel = new UnderMaintenance();
-                            atttendancePanel.setFeatureName("Attendance");
-                            mainPanel.add(atttendancePanel);
+                            mainPanel.add(new Attendance());
                             break;
                         case "Payroll":
-                            UnderMaintenance payrollPanel = new UnderMaintenance();
-                            payrollPanel.setFeatureName("Payroll");
-                            mainPanel.add(payrollPanel);
+                            mainPanel.add(new Payroll());
                             break;
                     }
 

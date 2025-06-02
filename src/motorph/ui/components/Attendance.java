@@ -1,97 +1,92 @@
 package motorph.ui.components;
 
 
-import motorph.model.EmployeeDetails;
-import motorph.ui.components.DisplayEmployeeInfo;
+import motorph.model.EmployeeTimeLogs;
 import motorph.repository.DataHandler;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import motorph.ui.components.CustomFont;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-public class EmployeePanel extends javax.swing.JPanel {
+
+public class Attendance extends javax.swing.JPanel {
     
-   // Pagination Variables and Employee List Setup
     private int currentPage = 1;
-    private int rowsPerPage = 20;  //  Number of employees to display per page in the table
-    private List<EmployeeDetails> employees;
+    private int rowsPerPage = 20;  
+    private List<EmployeeTimeLogs> timeLogs;
 
-    
-    public EmployeePanel(String name) {
+    private List<EmployeeTimeLogs> filteredLogs = null;
+
+    public Attendance() {
         initComponents();
 
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        for (int i = 0; i < employeeListTable.getColumnCount(); i++) {
-            employeeListTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        for (int i = 0; i < attendanceLogTable.getColumnCount(); i++) {
+            attendanceLogTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         
-        employeeListTable.getColumnModel().getColumn(7).setCellRenderer(new MyRender());
-        
-        loadEmployeesToTable();
-        
-        employeeListTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt){
-                int row = employeeListTable.rowAtPoint(evt.getPoint());
-                int col = employeeListTable.columnAtPoint(evt.getPoint());
-                
-                if (col == 7 && row >= 0) {
-                javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(EmployeePanel.this);
-                String employeeNumber = employeeListTable.getValueAt(row, 0).toString();
-                DisplayEmployeeInfo displayDialog = new DisplayEmployeeInfo(parentFrame, employeeNumber);            
-                displayDialog.setVisible(true);
-                }
-            }
-        }
-            );
-        
+        loadTimeLogsToTable();
+    }   
+       
+    public void loadTimeLogsToTable() {
+        timeLogs = DataHandler.readEmployeeTimeLogs(); // Load from CSV or DB
+        currentPage = 1;
+        updateTablePage();
     }
-    /**
-     * Loads all employee records from the data source and displays the first page of results in the table.
-     */
-    public void loadEmployeesToTable() {
-        employees = DataHandler.readEmployeeDetails(); // Save the full list only once
-        currentPage = 1; // Reset to page 1
-        updateTablePage(); // Show first page
-    }
-    /**
-    * Updates the table to show employees for the current page.
-    * This handles pagination logic and updates the navigation buttons.
-    */
+
     private void updateTablePage() {
-    DefaultTableModel model = (DefaultTableModel) employeeListTable.getModel();
-    model.setRowCount(0); //  Clear the table to remove any previously displayed employee records before adding new ones.
+        DefaultTableModel model = (DefaultTableModel) attendanceLogTable.getModel();
+        model.setRowCount(0);
 
         int start = (currentPage - 1) * rowsPerPage;
-        int end = Math.min(start + rowsPerPage, employees.size());
+        int end = Math.min(start + rowsPerPage, timeLogs.size());
 
         for (int i = start; i < end; i++) {
-            EmployeeDetails emp = employees.get(i);
+            EmployeeTimeLogs log = timeLogs.get(i);
+            String empName = log.getFirstName() + " " + log.getLastName();
+            String totalHours = calculateHoursWorked(log.getLogIn(), log.getLogOut());
+
             model.addRow(new Object[]{
-                emp.getEmployeeNumber(),
-                emp.getLastName(),
-                emp.getFirstName(),
-                emp.getSssNumber(),
-                emp.getPhilhealthNumber(),
-                emp.getTinNumber(),
-                emp.getPagIbigNumber(),
-                "View"
+                log.getEmployeeNumber(),
+                empName,
+                log.getDate(),
+                log.getLogIn(),
+                log.getLogOut(),
+                totalHours
             });
         }
 
         // Update page label and enable/disable buttons
-        int totalPages = (int) Math.ceil((double) employees.size() / rowsPerPage);
+        int totalPages = (int) Math.ceil((double) timeLogs.size() / rowsPerPage);
         lblPageInfo.setText("Page " + currentPage + " of " + totalPages);
         btnPrev.setEnabled(currentPage > 1);
         btnNext.setEnabled(currentPage < totalPages);
         
-
+    }
+    
+    private String calculateHoursWorked(String inTime, String outTime) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            LocalTime in = LocalTime.parse(inTime.trim(), formatter);
+            LocalTime out = LocalTime.parse(outTime.trim(), formatter);
+            Duration duration = Duration.between(in, out);
+            long hours = duration.toHours();
+            long minutes = duration.toMinutes() % 60;
+            return String.format("%02d:%02d", hours, minutes);
+        } catch (Exception e) {
+            System.out.println("Invalid time format: IN=" + inTime + ", OUT" + outTime );
+            e.printStackTrace();
+            return "Invalid";
+        }
     }
 
 
@@ -105,11 +100,10 @@ public class EmployeePanel extends javax.swing.JPanel {
 
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jScrollPane1 = new javax.swing.JScrollPane();
-        employeeListTable = new javax.swing.JTable();
+        attendanceLogTable = new javax.swing.JTable();
         searchButton = new javax.swing.JButton();
         searchBar = new javax.swing.JTextField();
         boarder1 = new javax.swing.JSeparator();
-        addEmpButton = new javax.swing.JButton();
         lblSubTitle = new javax.swing.JLabel();
         btnPrev = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
@@ -123,23 +117,23 @@ public class EmployeePanel extends javax.swing.JPanel {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        employeeListTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        employeeListTable.setModel(new javax.swing.table.DefaultTableModel(
+        attendanceLogTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        attendanceLogTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Employee #", "Last Name", "First Name", "SSS #", "PhilHealth #", "TIN #", "Pag-IBIG #", ""
+                "Employee #", "Employee Name", "Attendance Date", "In Time", "Out Time", "Total Worked Time"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -150,17 +144,15 @@ public class EmployeePanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        employeeListTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jScrollPane1.setViewportView(employeeListTable);
-        if (employeeListTable.getColumnModel().getColumnCount() > 0) {
-            employeeListTable.getColumnModel().getColumn(0).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-            employeeListTable.getColumnModel().getColumn(1).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(2).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(3).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(4).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(5).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(6).setResizable(false);
+        attendanceLogTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jScrollPane1.setViewportView(attendanceLogTable);
+        if (attendanceLogTable.getColumnModel().getColumnCount() > 0) {
+            attendanceLogTable.getColumnModel().getColumn(0).setResizable(false);
+            attendanceLogTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+            attendanceLogTable.getColumnModel().getColumn(1).setResizable(false);
+            attendanceLogTable.getColumnModel().getColumn(2).setResizable(false);
+            attendanceLogTable.getColumnModel().getColumn(3).setResizable(false);
+            attendanceLogTable.getColumnModel().getColumn(4).setResizable(false);
         }
 
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/search.png"))); // NOI18N
@@ -195,18 +187,8 @@ public class EmployeePanel extends javax.swing.JPanel {
         boarder1.setBackground(new java.awt.Color(0, 66, 102));
         boarder1.setForeground(new java.awt.Color(0, 66, 102));
 
-        addEmpButton.setBackground(new java.awt.Color(95, 182, 199));
-        addEmpButton.setForeground(new java.awt.Color(255, 255, 255));
-        addEmpButton.setText("Add Employee");
-        addEmpButton.setBorder(null);
-        addEmpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEmpButtonActionPerformed(evt);
-            }
-        });
-
         lblSubTitle.setFont(CustomFont.getExtendedSemiBold(20f));
-        lblSubTitle.setText("Active Employees");
+        lblSubTitle.setText("Attendance Log");
 
         btnPrev.setText("<");
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
@@ -231,28 +213,26 @@ public class EmployeePanel extends javax.swing.JPanel {
             .addComponent(boarder1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1003, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(882, 882, 882)
-                                    .addComponent(btnPrev)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblPageInfo)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnNext)))
-                            .addGap(5, 5, 5))))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(882, 882, 882)
+                                .addComponent(btnPrev)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblPageInfo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnNext)))
+                        .addContainerGap(27, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1009, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,9 +244,7 @@ public class EmployeePanel extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(boarder1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
@@ -306,49 +284,58 @@ public class EmployeePanel extends javax.swing.JPanel {
         // Check if the search field is empty before processing
         if (empNumberInput.isEmpty() || empNumberInput.equals("Search Employee by ID")) {
             JOptionPane.showMessageDialog(this, "Please enter an Employee ID.");
-            loadEmployeesToTable();
+            loadTimeLogsToTable();
             return;
         }
         
         // Make sure the input only has numbers (digits)
         if (!empNumberInput.matches("\\d+")) {
             JOptionPane.showMessageDialog(this, "Invalid Employee Number. Please enter digits only.");
-            loadEmployeesToTable();
+            loadTimeLogsToTable();
             return;
         }
 
-        // Load employee data from the DataHandler
-        if (employees == null || employees.isEmpty()) {
-            employees = DataHandler.readEmployeeDetails();
-        }
-        DefaultTableModel model = (DefaultTableModel) employeeListTable.getModel();
-        model.setRowCount(0); // Clear the existing table rows before adding search results
+        
+        DefaultTableModel model = (DefaultTableModel) attendanceLogTable.getModel();
+        model.setRowCount(0);
 
         boolean found = false;
 
-        // Loop through the employees and find the one that matches the entered employee ID
-        for (EmployeeDetails emp : employees) {
-            if (emp.getEmployeeNumber().equals(empNumberInput)) {
+        
+        for (EmployeeTimeLogs log : timeLogs) {
+            if (log.getEmployeeNumber().equals(empNumberInput)) {
+                String fullName = log.getFirstName() + " " + log.getLastName();
+                String totalHours = calculateHoursWorked(log.getLogIn(), log.getLogOut());
+                
                 model.addRow(new Object[]{
-                    emp.getEmployeeNumber(),
-                    emp.getLastName(),
-                    emp.getFirstName(),
-                    emp.getSssNumber(),
-                    emp.getPhilhealthNumber(),
-                    emp.getTinNumber(),
-                    emp.getPagIbigNumber(),
-                    "View"
+                    log.getEmployeeNumber(),
+                    fullName,
+                    log.getDate(),
+                    log.getLogIn(),
+                    log.getLogOut(),
+                    totalHours
                 });
                 found = true;
-                break; // Stop searching once the matching employee ID is found and displayed.
             }
         }
 
-        // If no employee is found with the given ID
-        if (!found) {
-            JOptionPane.showMessageDialog(this, "Employee not found.");
-            loadEmployeesToTable();
+            if (!found) {
+        JOptionPane.showMessageDialog(this, "Employee not found.");
+        filteredLogs = null;
+        loadTimeLogsToTable();
+    } else {
+        // Collect filtered logs
+        filteredLogs = new ArrayList<>();
+        for (EmployeeTimeLogs log : timeLogs) {
+            if (log.getEmployeeNumber().equals(empNumberInput)) {
+                filteredLogs.add(log);
+            }
         }
+
+        currentPage = 1;
+        updateFilteredTablePage();
+    }
+
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void searchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarActionPerformed
@@ -356,42 +343,75 @@ public class EmployeePanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_searchBarActionPerformed
 
-    private void addEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEmpButtonActionPerformed
-        JOptionPane.showMessageDialog(this, 
-        "The Add Employee functionality is currently under development and will be available soon. Thank you for your patience!", 
-        "Feature Under Development", 
-        JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_addEmpButtonActionPerformed
-
     private void searchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarKeyPressed
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-        searchButtonActionPerformed(null); 
-        }
+    if (searchBar.getText().trim().isEmpty()) {
+        filteredLogs = null;
+        loadTimeLogsToTable();
+    } else {
+        searchButtonActionPerformed(null);
+    }
+}
+
     }//GEN-LAST:event_searchBarKeyPressed
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
         if (currentPage > 1) {
         currentPage--;
-        updateTablePage();
+        if (filteredLogs != null) {
+            updateFilteredTablePage();
+        } else {
+            updateTablePage();
         }
+    }
     }//GEN-LAST:event_btnPrevActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        int totalPages = (int) Math.ceil((double) employees.size() / rowsPerPage);
-        if (currentPage < totalPages) {
+        int totalPages = (int) Math.ceil((double) (filteredLogs != null ? filteredLogs.size() : timeLogs.size()) / rowsPerPage);
+    if (currentPage < totalPages) {
         currentPage++;
-        updateTablePage();
+        if (filteredLogs != null) {
+            updateFilteredTablePage();
+        } else {
+            updateTablePage();
         }
+    }
     }//GEN-LAST:event_btnNextActionPerformed
 
-    
+    private void updateFilteredTablePage() {
+    DefaultTableModel model = (DefaultTableModel) attendanceLogTable.getModel();
+    model.setRowCount(0);
+
+    int start = (currentPage - 1) * rowsPerPage;
+    int end = Math.min(start + rowsPerPage, filteredLogs.size());
+
+    for (int i = start; i < end; i++) {
+        EmployeeTimeLogs log = filteredLogs.get(i);
+        String fullName = log.getFirstName() + " " + log.getLastName();
+        String totalHours = calculateHoursWorked(log.getLogIn(), log.getLogOut());
+
+        model.addRow(new Object[]{
+            log.getEmployeeNumber(),
+            fullName,
+            log.getDate(),
+            log.getLogIn(),
+            log.getLogOut(),
+            totalHours
+        });
+    }
+
+    int totalPages = (int) Math.ceil((double) filteredLogs.size() / rowsPerPage);
+    lblPageInfo.setText("Page " + currentPage + " of " + totalPages);
+    btnPrev.setEnabled(currentPage > 1);
+    btnNext.setEnabled(currentPage < totalPages);
+}
+
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addEmpButton;
+    private javax.swing.JTable attendanceLogTable;
     private javax.swing.JSeparator boarder1;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
-    private javax.swing.JTable employeeListTable;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPageInfo;

@@ -19,7 +19,7 @@ public class HomePanel extends javax.swing.JPanel {
         payPeriodText.setFont(CustomFont.getExtendedRegular(14f));
         payPeriodNum.setFont(CustomFont.getExtendedBold(18f));
         totalEmpNum.setFont(CustomFont.getExtendedBold(18f));
-        todayLeaveNum.setFont(CustomFont.getExtendedBold(18f));      
+        todayLeaveNum.setFont(CustomFont.getExtendedBold(18f)); 
     }
     
      /**
