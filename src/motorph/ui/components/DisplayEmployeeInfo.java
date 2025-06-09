@@ -1,5 +1,6 @@
 package motorph.ui.components;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
@@ -13,14 +14,16 @@ import motorph.repository.DataHandler;
 public class DisplayEmployeeInfo extends javax.swing.JDialog {
     
     List<JTextField> empInfoFieldList;
+    private EmployeePanel employeeListRefresher;
 
-    public DisplayEmployeeInfo(JFrame parent, String employeeNumber) {
-        super(parent, "Employee Info", true);
+    public DisplayEmployeeInfo(JFrame parent, String employeeNumber, EmployeePanel employeeListRefresher) {
+        super(parent, "Employee Information", true);
 
         initComponents();
         applyCustomFont();
         setLocationRelativeTo(parent);       
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.employeeListRefresher = employeeListRefresher;
         
         
         empInfoFieldList = Arrays.asList(
@@ -67,9 +70,26 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             address.setText(emp.getAddress());
             phoneNum.setText(emp.getPhoneNumber());
             sssNum.setText(emp.getSssNumber());
-            philHealthNum.setText(emp.getPhilhealthNumber());
-            tinNum.setText(emp.getTinNumber());
-            pagIbigNum.setText(emp.getPagIbigNumber());
+                       
+            DecimalFormat df = new DecimalFormat("0"); // Prevent scientific notation
+
+                try {
+                    philHealthNum.setText(df.format(Double.parseDouble(emp.getPhilhealthNumber())));
+                } catch (NumberFormatException e) {
+                    philHealthNum.setText(emp.getPhilhealthNumber()); // fallback
+                }
+
+                try {
+                    tinNum.setText(df.format(Double.parseDouble(emp.getTinNumber())));
+                } catch (NumberFormatException e) {
+                    tinNum.setText(emp.getTinNumber());
+                }
+
+                try {
+                    pagIbigNum.setText(df.format(Double.parseDouble(emp.getPagIbigNumber())));
+                } catch (NumberFormatException e) {
+                    pagIbigNum.setText(emp.getPagIbigNumber());
+                }
 
             // Job Info
             empStatus.setText(emp.getStatus());
@@ -590,12 +610,33 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     }//GEN-LAST:event_empHourlyRateActionPerformed
 
     private void deleteEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteEmpButtonActionPerformed
-        JOptionPane.showMessageDialog(
-            this,
-            "⚠️ Delete Employee is still under maintenance.",
-            "Notice",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        String employeeNumber = empNum.getText().trim(); 
+
+            if (employeeNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Employee Number is missing.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            List<EmployeeDetails> employees = DataHandler.readEmployeeDetails();
+            boolean exists = employees.stream()
+                    .anyMatch(emp -> emp.getEmployeeNumber().equals(employeeNumber));
+
+            if (!exists) {
+                JOptionPane.showMessageDialog(this, "Employee #" + employeeNumber + " not found.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to delete Employee #" + employeeNumber + "?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                DataHandler.removeEmployeeFromCSV(employeeNumber);
+                employeeListRefresher.loadEmployeesToTable();
+                JOptionPane.showMessageDialog(this, "✅ Employee #" + employeeNumber + " deleted successfully.", "Deleted", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose(); // closes the DisplayEmployeeInfo window
+            }
     }//GEN-LAST:event_deleteEmpButtonActionPerformed
 
     private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed

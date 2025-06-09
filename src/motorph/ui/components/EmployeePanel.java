@@ -5,6 +5,7 @@ import motorph.model.EmployeeDetails;
 import motorph.ui.components.DisplayEmployeeInfo;
 import motorph.repository.DataHandler;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -44,7 +45,8 @@ public class EmployeePanel extends javax.swing.JPanel {
                 if (col == 7 && row >= 0) {
                 javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(EmployeePanel.this);
                 String employeeNumber = employeeListTable.getValueAt(row, 0).toString();
-                DisplayEmployeeInfo displayDialog = new DisplayEmployeeInfo(parentFrame, employeeNumber);            
+                DisplayEmployeeInfo displayDialog = new DisplayEmployeeInfo(parentFrame, employeeNumber, EmployeePanel.this);    
+                
                 displayDialog.setVisible(true);
                 }
             }
@@ -73,14 +75,18 @@ public class EmployeePanel extends javax.swing.JPanel {
 
         for (int i = start; i < end; i++) {
             EmployeeDetails emp = employees.get(i);
+            
+            String philhealth = formatNumberString(emp.getPhilhealthNumber());
+            String pagibig = formatNumberString(emp.getPagIbigNumber());
+            
             model.addRow(new Object[]{
                 emp.getEmployeeNumber(),
                 emp.getLastName(),
                 emp.getFirstName(),
                 emp.getSssNumber(),
-                emp.getPhilhealthNumber(),
+                philhealth,
                 emp.getTinNumber(),
-                emp.getPagIbigNumber(),
+                pagibig,
                 "View"
             });
         }
@@ -93,6 +99,22 @@ public class EmployeePanel extends javax.swing.JPanel {
         
 
     }
+    
+    private String formatNumberString(String number) {
+        try {
+            // If it's in scientific form, convert it back to plain number
+            double num = Double.parseDouble(number);
+            java.text.DecimalFormat df = new java.text.DecimalFormat("0");
+            df.setMaximumFractionDigits(0);
+            df.setGroupingUsed(false);
+            return df.format(num);
+        } catch (NumberFormatException e) {
+            // If not a number, return as-is
+            return number;
+        }
+    }
+
+    
 
 
     
@@ -329,6 +351,7 @@ public class EmployeePanel extends javax.swing.JPanel {
         // Loop through the employees and find the one that matches the entered employee ID
         for (EmployeeDetails emp : employees) {
             if (emp.getEmployeeNumber().equals(empNumberInput)) {
+                
                 model.addRow(new Object[]{
                     emp.getEmployeeNumber(),
                     emp.getLastName(),
@@ -357,10 +380,11 @@ public class EmployeePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEmpButtonActionPerformed
-        JOptionPane.showMessageDialog(this, 
-        "The Add Employee functionality is currently under development and will be available soon. Thank you for your patience!", 
-        "Feature Under Development", 
-        JOptionPane.INFORMATION_MESSAGE);
+        JFrame parentFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        AddEmployee addEmpDialog = new AddEmployee(parentFrame);
+        addEmpDialog.setVisible(true);
+
+        loadEmployeesToTable();
     }//GEN-LAST:event_addEmpButtonActionPerformed
 
     private void searchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarKeyPressed
