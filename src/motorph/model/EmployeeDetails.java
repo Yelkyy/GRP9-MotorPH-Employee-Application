@@ -1,5 +1,8 @@
 package motorph.model;
 
+import java.text.DecimalFormat;
+import java.util.Locale;
+
 public class EmployeeDetails {
 
     // Employee attributes: personal and job-related information
@@ -135,13 +138,36 @@ public class EmployeeDetails {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+    
+    public void setEmployeeNumber(String employeeNumber) {
+        
+    }
 
     // Converts EmployeeDetails object to a CSV array for writing to a file
     public String[] toCSVArray() {
-        return new String[] { employeeNumber, lastName, firstName, birthday, address, phoneNumber, sssNumber,
-                philhealthNumber, tinNumber, pagIbigNumber, status, position, immediateSupervisor,
-                String.valueOf(basicSalary), String.valueOf(riceSubsidy), String.valueOf(phoneAllowance),
-                String.valueOf(clothingAllowance), String.valueOf(grossSemiMonthlyRate), String.valueOf(hourlyRate) };
+        DecimalFormat noSci = new DecimalFormat("0");       
+        
+        return new String[] { 
+            employeeNumber, 
+            lastName, 
+            firstName, 
+            birthday, 
+            address, 
+            phoneNumber, 
+            sssNumber,
+            noSci.format(Double.parseDouble(philhealthNumber)), 
+            tinNumber, 
+            noSci.format(Double.parseDouble(pagIbigNumber)), 
+            status, 
+            position, 
+            immediateSupervisor,
+            String.format(Locale.US, "%.2f", basicSalary), 
+            String.format(Locale.US, "%.2f", riceSubsidy), 
+            String.format(Locale.US, "%.2f", phoneAllowance),
+            String.format(Locale.US, "%.2f", clothingAllowance), 
+            String.format(Locale.US, "%.2f", grossSemiMonthlyRate), 
+            String.format(Locale.US, "%.2f", hourlyRate) 
+        };
     }
 
     // Provides a string representation of the employee's basic info
