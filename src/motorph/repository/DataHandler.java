@@ -8,6 +8,7 @@ import motorph.model.EmployeeTimeLogs;
 
 import java.io.*;
 import java.nio.file.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class DataHandler {
@@ -18,33 +19,73 @@ public class DataHandler {
 
     // Method to read employee details from the CSV file
     public static List<EmployeeDetails> readEmployeeDetails() {
-        List<EmployeeDetails> employees = new ArrayList<>();
-        try (Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE));
-                CSVReader csvReader = new CSVReader(reader)) {
+    List<EmployeeDetails> employees = new ArrayList<>();
+    try (Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE));
+         CSVReader csvReader = new CSVReaderBuilder(reader)
+             .withCSVParser(new CSVParserBuilder()
+                 .withSeparator(',')  // Comma as delimiter
+                 .withIgnoreQuotations(false)
+                 .build())
+             .build()) {
 
-            List<String[]> records = csvReader.readAll(); // Read all records from the CSV file
-            records.remove(0); // Remove the header row
+        List<String[]> records = csvReader.readAll();
+        records.remove(0); // Remove header
 
-            // Iterate over each record and create an EmployeeDetails object
-            for (String[] record : records) {
-                EmployeeDetails employee = new EmployeeDetails(
-                        record[0], record[1], record[2], record[3], record[4],
-                        record[5], record[6], record[7], record[8], record[9],
-                        record[10], record[11], record[12],
-                        Double.parseDouble(record[13].replace(",", "")), // Basic Salary
-                        Double.parseDouble(record[14].replace(",", "")), // Rice Subsidy
-                        Double.parseDouble(record[15].replace(",", "")), // Phone Allowance
-                        Double.parseDouble(record[16].replace(",", "")), // Clothing Allowance
-                        Double.parseDouble(record[17].replace(",", "")), // Gross Semi-monthly Rate
-                        Double.parseDouble(record[18].replace(",", "")) // Hourly Rate
-                );
-                employees.add(employee); // Add employee to the list
+        for (String[] record : records) {
+            if (record.length < 19) {
+                System.out.println("Skipping malformed row: " + Arrays.toString(record));
+                continue;
             }
-        } catch (IOException | CsvException e) {
-            e.printStackTrace(); // Print error if reading fails
+
+            DecimalFormat df = new DecimalFormat("0");
+
+            String formattedPhilHealth = record[7].trim();
+            String formattedTin = record[8].trim();
+            String formattedPagibig = record[9].trim();
+
+            EmployeeDetails employee = new EmployeeDetails(
+                record[0], // Emp ID
+                record[1], // Last Name
+                record[2], // First Name
+                record[3], // Birthday
+                record[4], // Address
+                record[5], // Phone
+                record[6], // SSS
+                record[7].trim(), // PhilHealth
+                record[8].trim(), // TIN
+                record[9].trim(), // Pag-IBIG
+                record[10], // Status
+                record[11], // Position
+                record[12], // Supervisor
+                parseDoubleSafe(record[13]), // Basic Salary
+                parseDoubleSafe(record[14]), // Rice Subsidy
+                parseDoubleSafe(record[15]), // Phone Allowance
+                parseDoubleSafe(record[16]), // Clothing Allowance
+                parseDoubleSafe(record[17]), // Gross Semi-monthly Rate
+                parseDoubleSafe(record[18])  // Hourly Rate
+            );
+            employees.add(employee);
         }
-        return employees; // Return the list of employees
+
+    } catch (IOException | CsvException e) {
+        e.printStackTrace();
     }
+    return employees;
+}
+
+// 🔽 Add this inside the same class, outside of readEmployeeDetails()
+private static double parseDoubleSafe(String value) {
+    if (value == null || value.trim().isEmpty() || value.equalsIgnoreCase("N/A")) {
+        return 0.0;
+    }
+    try {
+        return Double.parseDouble(value.replace(",", "").trim());
+    } catch (NumberFormatException e) {
+        //System.err.println("Invalid number: " + value);
+        return 0.0;
+    }
+}
+
 
     // Method to read employee time logs from the CSV file
     public static List<EmployeeTimeLogs> readEmployeeTimeLogs() {
@@ -89,7 +130,7 @@ public class DataHandler {
         try (Writer writer = new FileWriter(file, true);
                 CSVWriter csvWriter = new CSVWriter(writer,
                         CSVWriter.DEFAULT_SEPARATOR,
-                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_QUOTE_CHARACTER,
                         CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                         CSVWriter.RFC4180_LINE_END)) {
 
@@ -113,7 +154,7 @@ public class DataHandler {
         try (Writer writer = new FileWriter(CSV_FILE);
              CSVWriter csvWriter = new CSVWriter(writer,
                      CSVWriter.DEFAULT_SEPARATOR,
-                     CSVWriter.NO_QUOTE_CHARACTER,
+                     CSVWriter.DEFAULT_QUOTE_CHARACTER,
                      CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                      CSVWriter.RFC4180_LINE_END)) {
     
@@ -142,7 +183,7 @@ public class DataHandler {
         try (Writer writer = new FileWriter(CSV_FILE, true);
                 CSVWriter csvWriter = new CSVWriter(writer,
                         CSVWriter.DEFAULT_SEPARATOR,
-                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_QUOTE_CHARACTER,
                         CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                         CSVWriter.RFC4180_LINE_END)) {
 
@@ -152,6 +193,25 @@ public class DataHandler {
         } catch (IOException e) {
             System.out.println("❌ Error adding employee: " + e.getMessage());
         }
+    }
+    
+    //Will generate new employee number for the new employee
+    public static String generateNewEmpId() {
+        List<EmployeeDetails> employees = readEmployeeDetails();
+        int maxId = 10000;
+        
+        for (EmployeeDetails emp : employees) {
+            try {
+                int id = Integer.parseInt(emp.getEmployeeNumber());
+                if (id > maxId) {
+                    maxId = id;
+                }
+            } catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+        }
+        
+        return String.valueOf(maxId + 1);
     }
 
     // NEW METHOD: Remove an employee from the CSV file
