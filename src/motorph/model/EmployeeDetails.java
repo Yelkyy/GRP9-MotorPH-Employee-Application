@@ -175,5 +175,6 @@ public class EmployeeDetails {
     public String toString() {
         return "Employee #" + employeeNumber + " | Name: " + firstName + " " + lastName +
                 " | Position: " + position + " | Salary: " + basicSalary;
-    }
+    }  
+
 }

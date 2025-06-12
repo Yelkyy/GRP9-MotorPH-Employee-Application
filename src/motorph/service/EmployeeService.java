@@ -1,22 +1,17 @@
 package motorph.service;
 
 import java.util.List;
-
 import motorph.model.EmployeeDetails;
 import motorph.model.EmployeeTimeLogs;
-import motorph.repository.DataHandler;
-
-import java.util.ArrayList;
+import motorph.utils.EmployeeDataUtil;
 
 public class EmployeeService {
     
     // This method displays a list of all employees.
     public static void displayAllEmployees() {
         // Retrieve employee details from the data handler (e.g., from CSV or database)
-        List<EmployeeDetails> employees = DataHandler.readEmployeeDetails();
+        List<EmployeeDetails> employees = EmployeeDataUtil.getAllEmployees();
 
-        // Check if the employee list is empty, which could mean no data or an error in
-        // reading the file
         if (employees.isEmpty()) {
             System.out.println("No employee data found or failed to read CSV.");
         } else {
@@ -36,18 +31,7 @@ public class EmployeeService {
 
     // This method finds an employee by their ID
     public static EmployeeDetails findEmployeeById(String empId) {
-        // Retrieve employee details from the data handler
-        List<EmployeeDetails> employees = DataHandler.readEmployeeDetails();
-
-        // Loop through each employee to find a match by employee number
-        for (EmployeeDetails emp : employees) {
-            if (emp.getEmployeeNumber().equals(empId)) {
-                return emp; // Return the employee object if found
-            }
-        }
-
-        // Return null if no employee with the given ID is found
-        return null;
+        return EmployeeDataUtil.getEmployeeById(empId);
     }
 
     // This method shows the full details of an employee
@@ -75,25 +59,11 @@ public class EmployeeService {
     }
 
     // This method retrieves time logs for a specific employee based on their ID
-    public static List<EmployeeTimeLogs> getEmployeeTimeLogs(String empId) {
-        // Retrieve all time logs from the data handler
-        List<EmployeeTimeLogs> allLogs = DataHandler.readEmployeeTimeLogs(); // Read from CSV
-        List<EmployeeTimeLogs> employeeLogs = new ArrayList<>(); // Initialize an empty list for the employee's logs
-
-        // Loop through all time logs and select logs for the given employee ID
-        for (EmployeeTimeLogs log : allLogs) {
-            if (log.getEmployeeNumber().equals(empId)) {
-                employeeLogs.add(log); // Add matching logs to the employeeLogs list
-            }
-        }
-
-        // If no time logs are found for the given employee ID, display a message
+    public static List<EmployeeTimeLogs> getTimeLogsForEmployee(String empId) {
+        List<EmployeeTimeLogs> employeeLogs = EmployeeDataUtil.getTimeLogsForEmployee(empId);
         if (employeeLogs.isEmpty()) {
             System.out.println("No time logs found for Employee ID: " + empId);
         }
-
-        // Return the list of time logs for the employee
         return employeeLogs;
     }
-
 }
