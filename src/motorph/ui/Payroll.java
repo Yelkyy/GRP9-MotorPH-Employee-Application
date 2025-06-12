@@ -1,4 +1,4 @@
-package motorph.ui.components;
+package motorph.ui;
 
 
 import java.awt.Color;
@@ -13,6 +13,7 @@ import motorph.model.EmployeeDetails;
 import motorph.model.EmployeeTimeLogs;
 import motorph.repository.DataHandler;
 import motorph.service.PayrollService;
+import motorph.ui.components.CustomFont;
 
 
 

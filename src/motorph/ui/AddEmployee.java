@@ -1,4 +1,4 @@
-package motorph.ui.components;
+package motorph.ui;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,9 +92,9 @@ public class AddEmployee extends javax.swing.JDialog {
         empHourlyRate = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
         addEmpButton = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        empStatus = new javax.swing.JComboBox<>();
+        empPosition = new javax.swing.JComboBox<>();
+        empSupervisor = new javax.swing.JComboBox<>();
         birthday = new javax.swing.JFormattedTextField();
         sssNum = new javax.swing.JFormattedTextField();
 
@@ -239,24 +239,24 @@ public class AddEmployee extends javax.swing.JDialog {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Probationary", "Regular" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        empStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Probationary", "Regular" }));
+        empStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                empStatusActionPerformed(evt);
             }
         });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Position", "Chief Executive Officer", "Chief Finance Officer", "IT Operations and Systems", "HR Manager", "HR Rank and File", "Accounting Head", "Payroll Manager", "Payroll Team Leader", "Payroll Rank and File", "Account Manager", "Account Team Leader", "Account Rank and File", "Sales & Marketing", "Supply Chain and Logistics", "Customer Service and Relations" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        empPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Position", "Chief Executive Officer", "Chief Finance Officer", "IT Operations and Systems", "HR Manager", "HR Rank and File", "Accounting Head", "Payroll Manager", "Payroll Team Leader", "Payroll Rank and File", "Account Manager", "Account Team Leader", "Account Rank and File", "Sales & Marketing", "Supply Chain and Logistics", "Customer Service and Relations" }));
+        empPosition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                empPositionActionPerformed(evt);
             }
         });
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor", "Garcia, Manuel III", "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "Aquino, Bianca Sofia", "Alvaro, Roderick", "Salcedo Anthony", "Romualdez, Fredrick", "Mata, Christian", "De Leon, Selena", "Reyes, Isabella" }));
-        jComboBox3.addActionListener(new java.awt.event.ActionListener() {
+        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor", "Garcia, Manuel III", "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "Aquino, Bianca Sofia", "Alvaro, Roderick", "Salcedo Anthony", "Romualdez, Fredrick", "Mata, Christian", "De Leon, Selena", "Reyes, Isabella" }));
+        empSupervisor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox3ActionPerformed(evt);
+                empSupervisorActionPerformed(evt);
             }
         });
 
@@ -274,7 +274,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(73, 73, 73)
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(empStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -283,7 +283,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(73, 73, 73)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(empPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -292,7 +292,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(73, 73, 73)
                 .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(empSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -370,7 +370,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(101, 101, 101)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(empNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(empStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,7 +379,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(6, 6, 6)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(firstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(empPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -388,7 +388,7 @@ public class AddEmployee extends javax.swing.JDialog {
                 .addGap(6, 6, 6)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(empSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -564,9 +564,9 @@ public class AddEmployee extends javax.swing.JDialog {
             philHealthNum.getText(),
             tinNum.getText(),
             pagIbigNum.getText(),
-            (String) jComboBox1.getSelectedItem(), // status dropdown
-            (String) jComboBox2.getSelectedItem(), // position dropdown
-            (String) jComboBox3.getSelectedItem(), // supervisor dropdown
+            (String) empStatus.getSelectedItem(), // status dropdown
+            (String) empPosition.getSelectedItem(), // position dropdown
+            (String) empSupervisor.getSelectedItem(), // supervisor dropdown
             Double.parseDouble(empBasicSalary.getText()),
             Double.parseDouble(empRiceSubsidy.getText()),
             Double.parseDouble(empPhoneAllwc.getText()),
@@ -589,17 +589,17 @@ public class AddEmployee extends javax.swing.JDialog {
     
     }//GEN-LAST:event_addEmpButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void empStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empStatusActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_empStatusActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void empPositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empPositionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_empPositionActionPerformed
 
-    private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
+    private void empSupervisorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empSupervisorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox3ActionPerformed
+    }//GEN-LAST:event_empSupervisorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEmpButton;
@@ -610,12 +610,12 @@ public class AddEmployee extends javax.swing.JDialog {
     private javax.swing.JTextField empHourlyRate;
     private javax.swing.JTextField empNum;
     private javax.swing.JTextField empPhoneAllwc;
+    private javax.swing.JComboBox<String> empPosition;
     private javax.swing.JTextField empRiceSubsidy;
     private javax.swing.JTextField empSemiMonthlyRate;
+    private javax.swing.JComboBox<String> empStatus;
+    private javax.swing.JComboBox<String> empSupervisor;
     private javax.swing.JTextField firstName;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

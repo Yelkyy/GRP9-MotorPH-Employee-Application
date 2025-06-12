@@ -1,8 +1,9 @@
-package motorph.ui.components;
+package motorph.ui;
 
 
+import motorph.ui.AddEmployee;
 import motorph.model.EmployeeDetails;
-import motorph.ui.components.DisplayEmployeeInfo;
+import motorph.ui.DisplayEmployeeInfo;
 import motorph.repository.DataHandler;
 import java.util.List;
 import javax.swing.JFrame;
@@ -11,6 +12,8 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import motorph.ui.components.CustomFont;
+import motorph.ui.components.CustomFont;
+import motorph.ui.components.MyRender;
 
 
 public class EmployeePanel extends javax.swing.JPanel {
@@ -113,6 +116,8 @@ public class EmployeePanel extends javax.swing.JPanel {
             return number;
         }
     }
+    
+
 
     
 

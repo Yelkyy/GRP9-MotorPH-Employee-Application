@@ -1,7 +1,6 @@
 package motorph.ui;
 
 import java.awt.Font;
-import motorph.ui.components.HomePanel;
 
 /**
  * The Dashboard class serves as the main window of the MotorPH system.

@@ -1,13 +1,19 @@
-package motorph.ui.components;
+package motorph.ui;
+
+import java.awt.Color;
+import motorph.model.EmployeeDetails;
+import motorph.repository.DataHandler;
+import motorph.ui.components.CustomFont;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import motorph.model.EmployeeDetails;
-import motorph.repository.DataHandler;
+
 
 
 
@@ -18,8 +24,12 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
 
     public DisplayEmployeeInfo(JFrame parent, String employeeNumber, EmployeePanel employeeListRefresher) {
         super(parent, "Employee Information", true);
-
         initComponents();
+        
+        saveEmpButton.setVisible(false);
+        cancelEmpButton.setVisible(false);
+
+        
         applyCustomFont();
         setLocationRelativeTo(parent);       
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -27,25 +37,22 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         
         
         empInfoFieldList = Arrays.asList(
-                empNum,
-                firstName,
-                lastName,
-                birthday,
-                address,
-                phoneNum,
-                sssNum,
-                philHealthNum,
-                tinNum,
-                pagIbigNum,
-                empStatus,
-                empPosition,
-                empSupervisor,
-                empBasicSalary,
-                empRiceSubsidy,
-                empPhoneAllwc,
-                empClothingAllwc,
-                empSemiMonthlyRate,
-                empHourlyRate
+            empNum,
+            firstName,
+            lastName,
+            birthday,
+            address,
+            phoneNum,
+            sssNum,
+            philHealthNum,
+            tinNum,
+            pagIbigNum,
+            empBasicSalary,
+            empRiceSubsidy,
+            empPhoneAllwc,
+            empClothingAllwc,
+            empSemiMonthlyRate,
+            empHourlyRate
         );
         
         for (JTextField field : empInfoFieldList) {
@@ -53,6 +60,10 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             field.setBackground(new java.awt.Color(240, 240, 240));
             field.setFocusable(false);
         }
+        
+        empStatus.setEnabled(false);
+        empPosition.setEnabled(false);
+        empSupervisor.setEnabled(false);
         
         loadEmployeeDetails(employeeNumber);
         pack();
@@ -62,39 +73,49 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     List<EmployeeDetails> allEmployees = DataHandler.readEmployeeDetails();
     for (EmployeeDetails emp : allEmployees) {
         if (emp.getEmployeeNumber().equals(employeeNumber)) {
+            DecimalFormat df = new DecimalFormat("0");
+
             // Personal Info
             empNum.setText(emp.getEmployeeNumber());
             firstName.setText(emp.getFirstName());
             lastName.setText(emp.getLastName());
-            birthday.setText(emp.getBirthday());
+
+            // Format birthday to MM/dd/yyyy if needed
+            String rawBirthday = emp.getBirthday();
+            try {
+                Date parsedDate = new SimpleDateFormat("MM/dd/yyyy").parse(rawBirthday);
+                String formattedBirthday = new SimpleDateFormat("MM/dd/yyyy").format(parsedDate);
+                birthday.setText(formattedBirthday);
+            } catch (Exception e) {
+                birthday.setText(rawBirthday); // fallback
+            }
+
             address.setText(emp.getAddress());
             phoneNum.setText(emp.getPhoneNumber());
             sssNum.setText(emp.getSssNumber());
-                       
-            DecimalFormat df = new DecimalFormat("0"); // Prevent scientific notation
 
-                try {
-                    philHealthNum.setText(df.format(Double.parseDouble(emp.getPhilhealthNumber())));
-                } catch (NumberFormatException e) {
-                    philHealthNum.setText(emp.getPhilhealthNumber()); // fallback
-                }
+            try {
+                philHealthNum.setText(df.format(Double.parseDouble(emp.getPhilhealthNumber())));
+            } catch (NumberFormatException e) {
+                philHealthNum.setText(emp.getPhilhealthNumber());
+            }
 
-                try {
-                    tinNum.setText(df.format(Double.parseDouble(emp.getTinNumber())));
-                } catch (NumberFormatException e) {
-                    tinNum.setText(emp.getTinNumber());
-                }
+            try {
+                tinNum.setText(df.format(Double.parseDouble(emp.getTinNumber())));
+            } catch (NumberFormatException e) {
+                tinNum.setText(emp.getTinNumber());
+            }
 
-                try {
-                    pagIbigNum.setText(df.format(Double.parseDouble(emp.getPagIbigNumber())));
-                } catch (NumberFormatException e) {
-                    pagIbigNum.setText(emp.getPagIbigNumber());
-                }
+            try {
+                pagIbigNum.setText(df.format(Double.parseDouble(emp.getPagIbigNumber())));
+            } catch (NumberFormatException e) {
+                pagIbigNum.setText(emp.getPagIbigNumber());
+            }
 
             // Job Info
-            empStatus.setText(emp.getStatus());
-            empPosition.setText(emp.getPosition());
-            empSupervisor.setText(emp.getImmediateSupervisor());
+            empStatus.setSelectedItem(emp.getStatus());
+            empPosition.setSelectedItem(emp.getPosition());
+            empSupervisor.setSelectedItem(emp.getImmediateSupervisor());
 
             // Salary Info
             empBasicSalary.setText(String.format("%.2f", emp.getBasicSalary()));
@@ -104,13 +125,12 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             empSemiMonthlyRate.setText(String.format("%.2f", emp.getGrossSemiMonthlyRate()));
             empHourlyRate.setText(String.format("%.2f", emp.getHourlyRate()));
 
-            // Display Full Name
             empFullName.setText(emp.getFullName());
-
-            break; // Employee found
+            break;
         }
     }
 }
+
 
 
     @SuppressWarnings("unchecked")
@@ -118,6 +138,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        cancelEmpButton = new javax.swing.JButton();
+        saveEmpButton = new javax.swing.JButton();
         empFullName = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         empNum = new javax.swing.JTextField();
@@ -127,7 +149,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lastName = new javax.swing.JTextField();
-        birthday = new javax.swing.JTextField();
         firstName = new javax.swing.JTextField();
         address = new javax.swing.JTextField();
         phoneNum = new javax.swing.JTextField();
@@ -140,11 +161,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         tinNum = new javax.swing.JTextField();
         pagIbigNum = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        empStatus = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        empPosition = new javax.swing.JTextField();
-        empSupervisor = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
@@ -159,9 +177,12 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         jLabel21 = new javax.swing.JLabel();
         deleteEmpButton = new javax.swing.JButton();
         editEmpButton = new javax.swing.JButton();
+        birthday = new javax.swing.JFormattedTextField();
+        empStatus = new javax.swing.JComboBox<>();
+        empPosition = new javax.swing.JComboBox<>();
+        empSupervisor = new javax.swing.JComboBox<>();
 
-        setTitle("Employee Info");
-        setMaximumSize(new java.awt.Dimension(1054, 720));
+        setTitle("Employee Information");
         setMinimumSize(new java.awt.Dimension(993, 720));
         setName("displayEmpFrame"); // NOI18N
         setResizable(false);
@@ -170,6 +191,26 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         jPanel1.setMaximumSize(new java.awt.Dimension(1054, 720));
         jPanel1.setMinimumSize(new java.awt.Dimension(1054, 720));
         jPanel1.setPreferredSize(new java.awt.Dimension(1054, 720));
+
+        cancelEmpButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Grey"));
+        cancelEmpButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelEmpButton.setText("Cancel");
+        cancelEmpButton.setBorder(null);
+        cancelEmpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelEmpButtonActionPerformed(evt);
+            }
+        });
+
+        saveEmpButton.setBackground(new java.awt.Color(0, 153, 0));
+        saveEmpButton.setForeground(new java.awt.Color(255, 255, 255));
+        saveEmpButton.setText("Save");
+        saveEmpButton.setBorder(null);
+        saveEmpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveEmpButtonActionPerformed(evt);
+            }
+        });
 
         empFullName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         empFullName.setText("Fist Name Last Name");
@@ -195,12 +236,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         lastName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lastNameActionPerformed(evt);
-            }
-        });
-
-        birthday.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                birthdayActionPerformed(evt);
             }
         });
 
@@ -256,27 +291,9 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
 
         jLabel13.setText("Status:");
 
-        empStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                empStatusActionPerformed(evt);
-            }
-        });
-
         jLabel14.setText("Position:");
 
         jLabel15.setText("Supervisor:");
-
-        empPosition.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                empPositionActionPerformed(evt);
-            }
-        });
-
-        empSupervisor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                empSupervisorActionPerformed(evt);
-            }
-        });
 
         jLabel16.setText("Basic Sallary:");
 
@@ -336,7 +353,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             }
         });
 
-        editEmpButton.setBackground(new java.awt.Color(0, 153, 0));
+        editEmpButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Blue"));
         editEmpButton.setForeground(new java.awt.Color(255, 255, 255));
         editEmpButton.setText("Edit Employee");
         editEmpButton.setBorder(null);
@@ -346,94 +363,125 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             }
         });
 
+        birthday.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("MM/dd/yyyy"))));
+
+        empStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Probationary", "Regular" }));
+        empStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empStatusActionPerformed(evt);
+            }
+        });
+
+        empPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Position", "Chief Executive Officer", "Chief Finance Officer", "IT Operations and Systems", "HR Manager", "HR Rank and File", "Accounting Head", "Payroll Manager", "Payroll Team Leader", "Payroll Rank and File", "Account Manager", "Account Team Leader", "Account Rank and File", "Sales & Marketing", "Supply Chain and Logistics", "Customer Service and Relations" }));
+        empPosition.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empPositionActionPerformed(evt);
+            }
+        });
+
+        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor", "Garcia, Manuel III", "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "Aquino, Bianca Sofia", "Alvaro, Roderick", "Salcedo Anthony", "Romualdez, Fredrick", "Mata, Christian", "De Leon, Selena", "Reyes, Isabella" }));
+        empSupervisor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empSupervisorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneNum))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(birthday))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lastName))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(firstName))
-                        .addComponent(empFullName, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(empNum)))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(sssNum))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(philHealthNum))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(tinNum))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(pagIbigNum, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(73, 73, 73)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empStatus))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empSupervisor))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empPosition))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empClothingAllwc))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empBasicSalary))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empRiceSubsidy))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(empPhoneAllwc))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(phoneNum))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(birthday, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(lastName))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(firstName))
+                                .addComponent(empFullName, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(empNum)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(sssNum))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(philHealthNum))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(tinNum))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(pagIbigNum, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(73, 73, 73)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(empHourlyRate)
-                            .addComponent(empSemiMonthlyRate))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empSupervisor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empClothingAllwc))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empBasicSalary))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empRiceSubsidy))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(empPhoneAllwc))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(empHourlyRate)
+                                    .addComponent(empSemiMonthlyRate)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cancelEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(saveEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67)))
                 .addGap(95, 95, 95))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -468,9 +516,9 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(birthday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16)
-                    .addComponent(empBasicSalary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(empBasicSalary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(birthday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -517,7 +565,9 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                 .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -540,10 +590,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private void lastNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_lastNameActionPerformed
-
-    private void birthdayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthdayActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_birthdayActionPerformed
 
     private void firstNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstNameActionPerformed
         // TODO add your handling code here:
@@ -572,18 +618,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private void pagIbigNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pagIbigNumActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_pagIbigNumActionPerformed
-
-    private void empStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_empStatusActionPerformed
-
-    private void empPositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empPositionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_empPositionActionPerformed
-
-    private void empSupervisorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empSupervisorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_empSupervisorActionPerformed
 
     private void empBasicSalaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empBasicSalaryActionPerformed
         // TODO add your handling code here:
@@ -640,21 +674,106 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     }//GEN-LAST:event_deleteEmpButtonActionPerformed
 
     private void editEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmpButtonActionPerformed
-        JOptionPane.showMessageDialog(
-            this,
-            "⚠️ Edit Employee is still under maintenance.",
-            "Notice",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        setEditMode(true);
     }//GEN-LAST:event_editEmpButtonActionPerformed
+
+    private void empStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empStatusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_empStatusActionPerformed
+
+    private void empPositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empPositionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_empPositionActionPerformed
+
+    private void empSupervisorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empSupervisorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_empSupervisorActionPerformed
+
+    private void saveEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveEmpButtonActionPerformed
+        try {
+        EmployeeDetails updated = new EmployeeDetails(
+            empNum.getText().trim(),
+            lastName.getText().trim(),
+            firstName.getText().trim(),
+            birthday.getText().trim(),
+            address.getText().trim(),
+            phoneNum.getText().trim(),
+            sssNum.getText().trim(),
+            philHealthNum.getText().trim(),
+            tinNum.getText().trim(),
+            pagIbigNum.getText().trim(),
+            empStatus.getSelectedItem().toString(),
+            empPosition.getSelectedItem().toString(),
+            empSupervisor.getSelectedItem().toString(),
+            Double.parseDouble(empBasicSalary.getText().trim()),
+            Double.parseDouble(empRiceSubsidy.getText().trim()),
+            Double.parseDouble(empPhoneAllwc.getText().trim()),
+            Double.parseDouble(empClothingAllwc.getText().trim()),
+            Double.parseDouble(empSemiMonthlyRate.getText().trim()),
+            Double.parseDouble(empHourlyRate.getText().trim())
+        );
+
+        DataHandler.updateEmployeeInCSV(updated);
+
+           JOptionPane.showMessageDialog(this, 
+            "Employee information saved successfully.",
+            "Success",
+            JOptionPane.INFORMATION_MESSAGE);
+           
+        if (employeeListRefresher!= null) {
+            employeeListRefresher.loadEmployeesToTable();
+        }
+        
+        this.dispose();
+
+
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Please enter valid numbers for salary fields.",
+            "Input Error",
+            JOptionPane.ERROR_MESSAGE);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, 
+            "An error occurred while saving the employee information:\n" + ex.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+
+    }//GEN-LAST:event_saveEmpButtonActionPerformed
+
+    private void cancelEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelEmpButtonActionPerformed
+        setEditMode(false);
+        loadEmployeeDetails(empNum.getText().trim());
+    }//GEN-LAST:event_cancelEmpButtonActionPerformed
 
     private void applyCustomFont() {
         empFullName.setFont(CustomFont.getExtendedSemiBold(14f));
     }
+    
+    private void setEditMode(boolean isEditing) {
+    for (JTextField field : empInfoFieldList) {
+        boolean isEmpNum = field == empNum;
+        field.setEditable(isEditing && !isEmpNum);
+        field.setBackground(isEmpNum ? new java.awt.Color(240, 240, 240) :
+                                       (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
+        field.setFocusable(isEditing && !isEmpNum);
+    }
+
+    empStatus.setEnabled(isEditing);
+    empPosition.setEnabled(isEditing);
+    empSupervisor.setEnabled(isEditing);
+
+    saveEmpButton.setVisible(isEditing);
+    cancelEmpButton.setVisible(isEditing);
+    editEmpButton.setVisible(!isEditing);
+    deleteEmpButton.setVisible(!isEditing);
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField address;
-    private javax.swing.JTextField birthday;
+    private javax.swing.JFormattedTextField birthday;
+    private javax.swing.JButton cancelEmpButton;
     private javax.swing.JButton deleteEmpButton;
     private javax.swing.JButton editEmpButton;
     private javax.swing.JTextField empBasicSalary;
@@ -663,11 +782,11 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private javax.swing.JTextField empHourlyRate;
     private javax.swing.JTextField empNum;
     private javax.swing.JTextField empPhoneAllwc;
-    private javax.swing.JTextField empPosition;
+    private javax.swing.JComboBox<String> empPosition;
     private javax.swing.JTextField empRiceSubsidy;
     private javax.swing.JTextField empSemiMonthlyRate;
-    private javax.swing.JTextField empStatus;
-    private javax.swing.JTextField empSupervisor;
+    private javax.swing.JComboBox<String> empStatus;
+    private javax.swing.JComboBox<String> empSupervisor;
     private javax.swing.JTextField firstName;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -693,6 +812,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private javax.swing.JTextField pagIbigNum;
     private javax.swing.JTextField philHealthNum;
     private javax.swing.JTextField phoneNum;
+    private javax.swing.JButton saveEmpButton;
     private javax.swing.JTextField sssNum;
     private javax.swing.JTextField tinNum;
     // End of variables declaration//GEN-END:variables
