@@ -10,10 +10,6 @@ This project delivers a comprehensive payroll management solution that aligns wi
 
 ---
 
-This implementation follows the requirements outlined in the MPHCR01 specification, covering key functional components of the MotorPH Payroll Management System.
-
----
-
 ## Folder Structure
 ```
 /project-root
