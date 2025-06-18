@@ -1,128 +1,215 @@
 package motorph.ui;
 
 
-import motorph.ui.AddEmployee;
-import motorph.model.EmployeeDetails;
-import motorph.ui.DisplayEmployeeInfo;
-import motorph.repository.DataHandler;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import motorph.model.EmployeeDetails;
+import motorph.repository.DataHandler;
+import motorph.model.EmployeeTimeLogs;
+import motorph.service.PayrollService;
+import motorph.ui.components.CustomFont;
+
+
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import motorph.ui.components.CustomFont;
-import motorph.ui.components.CustomFont;
 import motorph.ui.components.MyRender;
 
 
-public class EmployeePanel extends javax.swing.JPanel {
-    
-   // Pagination Variables and Employee List Setup
-    private int currentPage = 1;
-    private int rowsPerPage = 20;  //  Number of employees to display per page in the table
-    private List<EmployeeDetails> employees;
 
+public class PayrollVer2 extends javax.swing.JPanel {
     
-    public EmployeePanel(String name) {
-        initComponents();
-
+        private List<EmployeeDetails> employees;
+        private List<EmployeeTimeLogs> timeLogs;
+        private List<LocalDate> payDates;
         
+        private int currentPage = 1;
+        private final int rowsPerPage = 15;       
+ 
+    public PayrollVer2() {
+        initComponents();
+        initTable();
+        loadData();
+        setupMouseClickListener();
+    }
+    
+    private void initTable() {   
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        for (int i = 0; i < employeeListTable.getColumnCount(); i++) {
-            employeeListTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        for (int i = 0; i < payrolList.getColumnCount(); i++) {
+            payrolList.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         
-        employeeListTable.getColumnModel().getColumn(7).setCellRenderer(new MyRender());
+        payrolList.getTableHeader().setReorderingAllowed(false); // Prevent reordering
+        payrolList.getTableHeader().setResizingAllowed(false);
         
-        loadEmployeesToTable();
+        if (payrolList.getColumnModel().getColumnCount() >= 6) {
+            payrolList.getColumnModel().getColumn(0).setPreferredWidth(250); // Pay Period
+            payrolList.getColumnModel().getColumn(1).setPreferredWidth(150); // Pay Date
+            payrolList.getColumnModel().getColumn(2).setPreferredWidth(80); // Employees
+            payrolList.getColumnModel().getColumn(3).setPreferredWidth(150); // Total Payment
+            payrolList.getColumnModel().getColumn(4).setPreferredWidth(80); // Status
+            payrolList.getColumnModel().getColumn(5).setPreferredWidth(80); // Action
+        }
         
-        employeeListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        payrolList.getColumnModel().getColumn(5).setCellRenderer(new MyRender());
+    }
+
+    private void loadData() {
+        employees = DataHandler.readEmployeeDetails();   
+        timeLogs = DataHandler.readEmployeeTimeLogs();   
+        payDates = getPayDatesFromTimeLogs();
+        loadPayRuns();
+    }
+
+    private void setupMouseClickListener() {
+        payrolList.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt){
-                int row = employeeListTable.rowAtPoint(evt.getPoint());
-                int col = employeeListTable.columnAtPoint(evt.getPoint());
-                
-                if (col == 7 && row >= 0) {
-                javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(EmployeePanel.this);
-                String employeeNumber = employeeListTable.getValueAt(row, 0).toString();
-                DisplayEmployeeInfo displayDialog = new DisplayEmployeeInfo(parentFrame, employeeNumber, EmployeePanel.this);    
-                
-                displayDialog.setVisible(true);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = payrolList.rowAtPoint(evt.getPoint());
+                int col = payrolList.columnAtPoint(evt.getPoint());
+
+               
+                if (col == 5) {
+                    String action = (String) payrolList.getValueAt(row, col);
+                    if ("View".equalsIgnoreCase(action)) {
+                        String payPeriod = (String) payrolList.getValueAt(row, 0); // Column 0 = Pay Period
+                        String payDate = (String) payrolList.getValueAt(row, 1);   // Column 1 = Pay Date
+
+                        // Open the detailed payroll view for this pay period
+                        openDisplayPayrollList(payPeriod, payDate);
+                    }
                 }
             }
+        });       
+    }
+    
+    private void loadPayRuns() {
+        if (payDates == null || payDates.isEmpty()) {
+            lblPageInfo.setText("No available pay periods.");
+            btnPrev.setEnabled(false);
+            btnNext.setEnabled(false);
+            return;
         }
-            );
         
-    }
-    /**
-     * Loads all employee records from the data source and displays the first page of results in the table.
-     */
-    public void loadEmployeesToTable() {
-        employees = DataHandler.readEmployeeDetails(); // Save the full list only once
-        currentPage = 1; // Reset to page 1
-        updateTablePage(); // Show first page
-    }
-    /**
-    * Updates the table to show employees for the current page.
-    * This handles pagination logic and updates the navigation buttons.
-    */
-    private void updateTablePage() {
-    DefaultTableModel model = (DefaultTableModel) employeeListTable.getModel();
-    model.setRowCount(0); //  Clear the table to remove any previously displayed employee records before adding new ones.
+        DefaultTableModel model = (DefaultTableModel) payrolList.getModel();
+        model.setRowCount(0); // Clear table
 
-        int start = (currentPage - 1) * rowsPerPage;
-        int end = Math.min(start + rowsPerPage, employees.size());
+        DateTimeFormatter fullDateFmt = DateTimeFormatter.ofPattern("MMMM d, yyyy");
 
-        for (int i = start; i < end; i++) {
-            EmployeeDetails emp = employees.get(i);
-            
-            String philhealth = formatNumberString(emp.getPhilhealthNumber());
-            String pagibig = formatNumberString(emp.getPagIbigNumber());
-            
+        int totalPages = (int) Math.ceil((double) payDates.size() / rowsPerPage);
+        int startIndex = (currentPage - 1) * rowsPerPage;
+        int endIndex = Math.min(startIndex + rowsPerPage, payDates.size());
+
+        List<LocalDate> pagePayDates = payDates.subList(startIndex, endIndex);
+
+        for (LocalDate cutoffDate : pagePayDates) {
+            LocalDate startDate = (cutoffDate.getDayOfMonth() == 15)
+                ? cutoffDate.withDayOfMonth(1)
+                : cutoffDate.withDayOfMonth(16);
+
+            String payPeriod = startDate.format(fullDateFmt) + " - " + cutoffDate.format(fullDateFmt);
+            String payDate = cutoffDate.format(fullDateFmt);
+
+            int employeeCount = countEmployeesPaidOn(cutoffDate);
+            double totalPayment = calculateTotalPaymentOn(cutoffDate);
+           
+            String status = (employeeCount > 0) ? "Completed" : "Pending";
+            String action = (employeeCount > 0) ? "View" : "Run Payroll";
+
             model.addRow(new Object[]{
-                emp.getEmployeeNumber(),
-                emp.getLastName(),
-                emp.getFirstName(),
-                emp.getSssNumber(),
-                philhealth,
-                emp.getTinNumber(),
-                pagibig,
-                "View"
+                payPeriod,
+                payDate,
+                employeeCount,
+                "₱ " + String.format("%,.2f", totalPayment),
+                status,
+                action
             });
         }
 
         // Update page label and enable/disable buttons
-        int totalPages = (int) Math.ceil((double) employees.size() / rowsPerPage);
         lblPageInfo.setText("Page " + currentPage + " of " + totalPages);
         btnPrev.setEnabled(currentPage > 1);
         btnNext.setEnabled(currentPage < totalPages);
-        
-
     }
-    
-    private String formatNumberString(String number) {
-        try {
-            // If it's in scientific form, convert it back to plain number
-            double num = Double.parseDouble(number);
-            java.text.DecimalFormat df = new java.text.DecimalFormat("0");
-            df.setMaximumFractionDigits(0);
-            df.setGroupingUsed(false);
-            return df.format(num);
-        } catch (NumberFormatException e) {
-            // If not a number, return as-is
-            return number;
+
+    private List<LocalDate> getPayDatesFromTimeLogs() {
+        Set<LocalDate> payDates = new TreeSet<>();
+        for (EmployeeTimeLogs log : timeLogs) {
+            LocalDate logDate = LocalDate.parse(log.getDate());
+            payDates.add(getCutoffForDate(logDate));
         }
+        return new ArrayList<>(payDates);
+    }
+
+    private LocalDate getCutoffForDate(LocalDate date) {
+        return(date.getDayOfMonth() <= 15)
+                ? LocalDate.of(date.getYear(), date.getMonth(), 15)
+                : YearMonth.of(date.getYear(), date.getMonth()).atEndOfMonth();
     }
     
-
-
+    private boolean isInPayPeriod(LocalDate logDate, LocalDate cutoffDate) {
+        LocalDate start = (cutoffDate.getDayOfMonth() == 15)
+                 ? cutoffDate.withDayOfMonth(1)
+                 : cutoffDate.withDayOfMonth(16);
+        return !logDate.isBefore(start) && !logDate.isAfter(cutoffDate);
+        }    
     
+    private int countEmployeesPaidOn(LocalDate cutoff) {
+        return (int) timeLogs.stream()
+                .filter(log -> isInPayPeriod(LocalDate.parse(log.getDate()), cutoff))
+                .map(EmployeeTimeLogs::getEmployeeNumber)
+                .distinct()
+                .count();
+    }
 
+    private double calculateTotalPaymentOn(LocalDate cutoff) {
+        double total = 0.0;
+        
+        String monthYear = cutoff.format(DateTimeFormatter.ofPattern("MM-yyyy"));
+        int payPeriod = (cutoff.getDayOfMonth() == 15) ? 1 : 2;
+        
+        for (EmployeeDetails emp : employees) {
+            List<EmployeeTimeLogs> empLogs = timeLogs.stream()
+                .filter(log -> log.getEmployeeNumber().equals(emp.getEmployeeNumber()))
+                .filter(log -> isInPayPeriod(LocalDate.parse(log.getDate()), cutoff))
+                .toList();
 
+            if (!empLogs.isEmpty()) {
+                total += PayrollService.calculateNetPay(emp, empLogs, monthYear, payPeriod);
+            }
+        }
+        return total;
+    }
     
+    private void openDisplayPayrollList(String payPeriod, String payDate) {
+        JFrame parentFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this); 
+        DisplayPayrollList dialog = new DisplayPayrollList(parentFrame);     
+        
+        dialog.setPayPeriod(payPeriod);  // Set "January 1 - January 15"
+        dialog.setPayDay(payDate);       // Set actual pay date (e.g., "January 15, 2025")
+        dialog.setPayrollType("Semi-Monthly");
+
+        // Parse pay date string to LocalDate
+        LocalDate cutoffDate = LocalDate.parse(payDate, DateTimeFormatter.ofPattern("MMMM d, yyyy"));
+        int employeeCount = countEmployeesPaidOn(cutoffDate);
+        dialog.setTotalEmployees(employeeCount);
+        dialog.setTableData(payDate);  
+
+        dialog.setLocationRelativeTo(null);  // Center the dialog
+        dialog.setVisible(true);            
+    }
+
+
     
 
 
@@ -131,64 +218,20 @@ public class EmployeePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        jScrollPane1 = new javax.swing.JScrollPane();
-        employeeListTable = new javax.swing.JTable();
         searchButton = new javax.swing.JButton();
         searchBar = new javax.swing.JTextField();
         boarder1 = new javax.swing.JSeparator();
-        addEmpButton = new javax.swing.JButton();
         lblSubTitle = new javax.swing.JLabel();
         btnPrev = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         lblPageInfo = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        payrolList = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1054, 720));
         setMinimumSize(new java.awt.Dimension(1054, 720));
         setPreferredSize(new java.awt.Dimension(1054, 720));
-
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        employeeListTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        employeeListTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Employee #", "Last Name", "First Name", "SSS #", "PhilHealth #", "TIN #", "Pag-IBIG #", ""
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        employeeListTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jScrollPane1.setViewportView(employeeListTable);
-        if (employeeListTable.getColumnModel().getColumnCount() > 0) {
-            employeeListTable.getColumnModel().getColumn(0).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-            employeeListTable.getColumnModel().getColumn(1).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(2).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(3).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(4).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(5).setResizable(false);
-            employeeListTable.getColumnModel().getColumn(6).setResizable(false);
-        }
 
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/search.png"))); // NOI18N
         searchButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -222,18 +265,9 @@ public class EmployeePanel extends javax.swing.JPanel {
         boarder1.setBackground(new java.awt.Color(0, 66, 102));
         boarder1.setForeground(new java.awt.Color(0, 66, 102));
 
-        addEmpButton.setBackground(new java.awt.Color(95, 182, 199));
-        addEmpButton.setForeground(new java.awt.Color(255, 255, 255));
-        addEmpButton.setText("Add Employee");
-        addEmpButton.setBorder(null);
-        addEmpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEmpButtonActionPerformed(evt);
-            }
-        });
-
         lblSubTitle.setFont(CustomFont.getExtendedSemiBold(20f));
-        lblSubTitle.setText("Active Employees");
+        lblSubTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/banknotes.png"))); // NOI18N
+        lblSubTitle.setText("Payroll List");
 
         btnPrev.setText("<");
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
@@ -251,6 +285,40 @@ public class EmployeePanel extends javax.swing.JPanel {
 
         lblPageInfo.setText("Page 1 of 1");
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        payrolList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        payrolList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Pay Period", "Pay Date", "Employee", "Total Payment", "Status", "Actions"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        payrolList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        payrolList.setAutoscrolls(false);
+        jScrollPane1.setViewportView(payrolList);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -258,50 +326,42 @@ public class EmployeePanel extends javax.swing.JPanel {
             .addComponent(boarder1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1003, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(882, 882, 882)
-                                    .addComponent(btnPrev)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblPageInfo)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnNext)))
-                            .addGap(5, 5, 5))))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnPrev)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblPageInfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNext)
+                .addGap(23, 23, 23))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(searchBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addComponent(boarder1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPrev)
+                    .addComponent(lblPageInfo)
                     .addComponent(btnNext)
-                    .addComponent(lblPageInfo))
-                .addContainerGap(34, Short.MAX_VALUE))
+                    .addComponent(btnPrev))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
 
         // Manually added the FocusListener below the searchBar setup
@@ -328,55 +388,6 @@ public class EmployeePanel extends javax.swing.JPanel {
         
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
 
-        String empNumberInput = searchBar.getText().trim();
-
-        // Check if the search field is empty before processing
-        if (empNumberInput.isEmpty() || empNumberInput.equals("Search Employee by ID")) {
-            JOptionPane.showMessageDialog(this, "Please enter an Employee ID.");
-            loadEmployeesToTable();
-            return;
-        }
-        
-        // Make sure the input only has numbers (digits)
-        if (!empNumberInput.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "Invalid Employee Number. Please enter digits only.");
-            loadEmployeesToTable();
-            return;
-        }
-
-        // Load employee data from the DataHandler
-        if (employees == null || employees.isEmpty()) {
-            employees = DataHandler.readEmployeeDetails();
-        }
-        DefaultTableModel model = (DefaultTableModel) employeeListTable.getModel();
-        model.setRowCount(0); // Clear the existing table rows before adding search results
-
-        boolean found = false;
-
-        // Loop through the employees and find the one that matches the entered employee ID
-        for (EmployeeDetails emp : employees) {
-            if (emp.getEmployeeNumber().equals(empNumberInput)) {
-                
-                model.addRow(new Object[]{
-                    emp.getEmployeeNumber(),
-                    emp.getLastName(),
-                    emp.getFirstName(),
-                    emp.getSssNumber(),
-                    emp.getPhilhealthNumber(),
-                    emp.getTinNumber(),
-                    emp.getPagIbigNumber(),
-                    "View"
-                });
-                found = true;
-                break; // Stop searching once the matching employee ID is found and displayed.
-            }
-        }
-
-        // If no employee is found with the given ID
-        if (!found) {
-            JOptionPane.showMessageDialog(this, "Employee not found.");
-            loadEmployeesToTable();
-        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void searchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarActionPerformed
@@ -384,47 +395,36 @@ public class EmployeePanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_searchBarActionPerformed
 
-    private void addEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEmpButtonActionPerformed
-        JFrame parentFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        AddEmployee addEmpDialog = new AddEmployee(parentFrame);
-        addEmpDialog.setVisible(true);
-
-        loadEmployeesToTable();
-    }//GEN-LAST:event_addEmpButtonActionPerformed
-
     private void searchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarKeyPressed
-        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-        searchButtonActionPerformed(null); 
-        }
+      
     }//GEN-LAST:event_searchBarKeyPressed
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
         if (currentPage > 1) {
         currentPage--;
-        updateTablePage();
+        loadPayRuns();
         }
     }//GEN-LAST:event_btnPrevActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        int totalPages = (int) Math.ceil((double) employees.size() / rowsPerPage);
+        int totalPages = (int) Math.ceil((double) payDates.size() / rowsPerPage);
         if (currentPage < totalPages) {
         currentPage++;
-        updateTablePage();
+        loadPayRuns();
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
     
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addEmpButton;
     private javax.swing.JSeparator boarder1;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
-    private javax.swing.JTable employeeListTable;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPageInfo;
     private javax.swing.JLabel lblSubTitle;
+    private javax.swing.JTable payrolList;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
     // End of variables declaration//GEN-END:variables

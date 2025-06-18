@@ -1,6 +1,6 @@
 package motorph.ui.components;
 
-import motorph.ui.Payroll;
+import motorph.ui.PayrollVer2;
 import motorph.ui.HomePanel;
 import motorph.ui.Attendance;
 import java.awt.Color;
@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import motorph.ui.Dashboard;
 import motorph.ui.EmployeePanel;
+import motorph.ui.PayrollVer2;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -92,7 +93,7 @@ public class Menu extends JComponent {
                             mainPanel.add(new Attendance());
                             break;
                         case "Payroll":
-                            mainPanel.add(new Payroll());
+                            mainPanel.add(new PayrollVer2());
                             break;
                     }
 

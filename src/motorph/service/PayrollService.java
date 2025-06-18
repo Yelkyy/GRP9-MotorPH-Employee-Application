@@ -248,7 +248,7 @@ public class PayrollService {
     
     public static double calculateNetPay(EmployeeDetails employee, List<EmployeeTimeLogs> logs, 
             String monthYear, int payPeriod){
-
+        
         YearMonth yearMonth = YearMonth.parse(monthYear, DateTimeFormatter.ofPattern("MM-yyyy"));
         int lastDayOfMonth = yearMonth.lengthOfMonth();
 
@@ -263,6 +263,10 @@ public class PayrollService {
                                    employee.getClothingAllowance();
 
         List<EmployeeTimeLogs> filteredLogs = filterLogsByDateRange(logs, monthYear, startDay, endDay);
+        
+        if (filteredLogs.isEmpty()) {
+            return 0.0;
+        }
 
         List<String[]> lateDeductions = hasDeductions ? calculateLateUndertime(filteredLogs) : new ArrayList<>();
         double totalLateUndertimeDeductions = hasDeductions ? extractTotalLateDeductions(lateDeductions) : 0.0;
