@@ -10,7 +10,16 @@ import motorph.ui.components.CustomFont;
  * It displays the current pay period dynamically based on the system date
  * and includes a calendar widget.
  */
-public class HomePanel extends javax.swing.JPanel {
+public class HomePanel extends javax.swing.JPanel {  
+     /**
+     * Constructs the HomePanel and initializes its components.
+     */  
+    public HomePanel() {
+        initComponents();
+        applyCustomFont();
+        updateTotalEmployees();
+        
+    }
     
     private void applyCustomFont() {
         header.setFont(CustomFont.getExtendedSemiBold(28f));
@@ -23,14 +32,11 @@ public class HomePanel extends javax.swing.JPanel {
         todayLeaveNum.setFont(CustomFont.getExtendedBold(18f)); 
     }
     
-     /**
-     * Constructs the HomePanel and initializes its components.
-     */  
-    public HomePanel() {
-        initComponents();
-        applyCustomFont();
-        
+    private void updateTotalEmployees() {
+        int totalEmployees = motorph.repository.DataHandler.readEmployeeDetails().size();
+        totalEmpNum.setText(String.valueOf(totalEmployees));
     }
+    
       
         @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
