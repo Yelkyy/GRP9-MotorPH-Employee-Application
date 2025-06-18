@@ -1,10 +1,10 @@
 package motorph.ui;
 
-import java.awt.Color;
 import motorph.model.EmployeeDetails;
 import motorph.repository.DataHandler;
 import motorph.ui.components.CustomFont;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -20,103 +20,65 @@ import javax.swing.JTextField;
 public class DisplayEmployeeInfo extends javax.swing.JDialog {
     
     List<JTextField> empInfoFieldList;
-    private EmployeePanel employeeListRefresher;
+    private final EmployeePanel employeeListRefresher;
 
     public DisplayEmployeeInfo(JFrame parent, String employeeNumber, EmployeePanel employeeListRefresher) {
         super(parent, "Employee Information", true);
         initComponents();
         
-        saveEmpButton.setVisible(false);
-        cancelEmpButton.setVisible(false);
-
-        
-        applyCustomFont();
-        setLocationRelativeTo(parent);       
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.employeeListRefresher = employeeListRefresher;
+        prepareFormUI();
+        loadEmployeeDetails(employeeNumber);
+    }
+
+    private void prepareFormUI(){
+        setLocationRelativeTo(getParent());
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
+        saveEmpButton.setVisible(false);
+        cancelEmpButton.setVisible(false);       
+        applyCustomFont();
         
         empInfoFieldList = Arrays.asList(
-            empNum,
-            firstName,
-            lastName,
-            birthday,
-            address,
-            phoneNum,
-            sssNum,
-            philHealthNum,
-            tinNum,
-            pagIbigNum,
-            empBasicSalary,
-            empRiceSubsidy,
-            empPhoneAllwc,
-            empClothingAllwc,
-            empSemiMonthlyRate,
-            empHourlyRate
+                empNum, firstName, lastName, birthday, address, phoneNum,
+                sssNum, philHealthNum, tinNum, pagIbigNum,
+                empBasicSalary, empRiceSubsidy, empPhoneAllwc,
+                empClothingAllwc, empSemiMonthlyRate, empHourlyRate
         );
         
         for (JTextField field : empInfoFieldList) {
+            boolean isEmpNum = field == empNum;
             field.setEditable(false);
             field.setBackground(new java.awt.Color(240, 240, 240));
-            field.setFocusable(false);
+            field.setFocusable(!isEmpNum);
         }
         
         empStatus.setEnabled(false);
         empPosition.setEnabled(false);
         empSupervisor.setEnabled(false);
-        
-        loadEmployeeDetails(employeeNumber);
-        pack();
-    }
+    }    
     
     private void loadEmployeeDetails(String employeeNumber) {
-    List<EmployeeDetails> allEmployees = DataHandler.readEmployeeDetails();
-    for (EmployeeDetails emp : allEmployees) {
-        if (emp.getEmployeeNumber().equals(employeeNumber)) {
-            DecimalFormat df = new DecimalFormat("0");
-
+        List<EmployeeDetails> allEmployees = DataHandler.readEmployeeDetails();
+        EmployeeDetails emp = allEmployees.stream()
+                .filter(e -> e.getEmployeeNumber().equals(employeeNumber))
+                .findFirst()
+                .orElse(null);
+    
+        if (emp == null) return;
             // Personal Info
             empNum.setText(emp.getEmployeeNumber());
             firstName.setText(emp.getFirstName());
             lastName.setText(emp.getLastName());
 
-            // Format birthday to MM/dd/yyyy if needed
-            String rawBirthday = emp.getBirthday();
-            try {
-                Date parsedDate = new SimpleDateFormat("MM/dd/yyyy").parse(rawBirthday);
-                String formattedBirthday = new SimpleDateFormat("MM/dd/yyyy").format(parsedDate);
-                birthday.setText(formattedBirthday);
-            } catch (Exception e) {
-                birthday.setText(rawBirthday); // fallback
-            }
-
+            birthday.setText(formatDate(emp.getBirthday()));
             address.setText(emp.getAddress());
             phoneNum.setText(emp.getPhoneNumber());
             sssNum.setText(emp.getSssNumber());
-
-            try {
-                philHealthNum.setText(df.format(Double.parseDouble(emp.getPhilhealthNumber())));
-            } catch (NumberFormatException e) {
-                philHealthNum.setText(emp.getPhilhealthNumber());
-            }
-
-            try {
-                tinNum.setText(df.format(Double.parseDouble(emp.getTinNumber())));
-            } catch (NumberFormatException e) {
-                tinNum.setText(emp.getTinNumber());
-            }
-
-            try {
-                pagIbigNum.setText(df.format(Double.parseDouble(emp.getPagIbigNumber())));
-            } catch (NumberFormatException e) {
-                pagIbigNum.setText(emp.getPagIbigNumber());
-            }
-
             // Job Info
             empStatus.setSelectedItem(emp.getStatus());
             empPosition.setSelectedItem(emp.getPosition());
             empSupervisor.setSelectedItem(emp.getImmediateSupervisor());
-
             // Salary Info
             empBasicSalary.setText(String.format("%.2f", emp.getBasicSalary()));
             empRiceSubsidy.setText(String.format("%.2f", emp.getRiceSubsidy()));
@@ -126,10 +88,50 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             empHourlyRate.setText(String.format("%.2f", emp.getHourlyRate()));
 
             empFullName.setText(emp.getFullName());
-            break;
         }
-    }
-}
+
+        private String formatDate(String rawBirthday){
+            try {
+                Date parsedDate = new SimpleDateFormat("MM/dd/yyyy").parse(rawBirthday);
+                return new SimpleDateFormat("MM/dd/yyyy").format(parsedDate);
+            } catch (Exception e) {
+                return rawBirthday;
+            }
+        }
+
+        private String parseFormattedNumber(String value, DecimalFormat df) {
+            try {
+                return df.format(Double.parseDouble(value));
+            } catch (NumberFormatException e) {
+                return value;
+            }
+        }
+        
+         private void applyCustomFont() {
+            empFullName.setFont(CustomFont.getExtendedSemiBold(14f));
+        }
+
+        private void setEditMode(boolean isEditing) {
+            for (JTextField field : empInfoFieldList) {
+                boolean isEmpNum = field == empNum;
+                field.setEditable(isEditing && !isEmpNum);
+                field.setBackground(isEmpNum ? new java.awt.Color(240, 240, 240) :
+                                               (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
+                field.setFocusable(isEditing && !isEmpNum);
+            }
+
+            empStatus.setEnabled(isEditing);
+            empPosition.setEnabled(isEditing);
+            empSupervisor.setEnabled(isEditing);
+
+            saveEmpButton.setVisible(isEditing);
+            cancelEmpButton.setVisible(isEditing);
+            editEmpButton.setVisible(!isEditing);
+            deleteEmpButton.setVisible(!isEditing);
+        }
+
+
+
 
 
 
@@ -667,6 +669,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 DataHandler.removeEmployeeFromCSV(employeeNumber);
+                DataHandler.deleteTimeLogsByEmployeeNumber(employeeNumber);
                 employeeListRefresher.loadEmployeesToTable();
                 JOptionPane.showMessageDialog(this, "✅ Employee #" + employeeNumber + " deleted successfully.", "Deleted", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose(); // closes the DisplayEmployeeInfo window
@@ -691,53 +694,50 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
 
     private void saveEmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveEmpButtonActionPerformed
         try {
-        EmployeeDetails updated = new EmployeeDetails(
-            empNum.getText().trim(),
-            lastName.getText().trim(),
-            firstName.getText().trim(),
-            birthday.getText().trim(),
-            address.getText().trim(),
-            phoneNum.getText().trim(),
-            sssNum.getText().trim(),
-            philHealthNum.getText().trim(),
-            tinNum.getText().trim(),
-            pagIbigNum.getText().trim(),
-            empStatus.getSelectedItem().toString(),
-            empPosition.getSelectedItem().toString(),
-            empSupervisor.getSelectedItem().toString(),
-            Double.parseDouble(empBasicSalary.getText().trim()),
-            Double.parseDouble(empRiceSubsidy.getText().trim()),
-            Double.parseDouble(empPhoneAllwc.getText().trim()),
-            Double.parseDouble(empClothingAllwc.getText().trim()),
-            Double.parseDouble(empSemiMonthlyRate.getText().trim()),
-            Double.parseDouble(empHourlyRate.getText().trim())
-        );
+            EmployeeDetails updated = new EmployeeDetails(
+                empNum.getText().trim(),
+                lastName.getText().trim(),
+                firstName.getText().trim(),
+                birthday.getText().trim(),
+                address.getText().trim(),
+                phoneNum.getText().trim(),
+                sssNum.getText().trim(),
+                philHealthNum.getText().trim(),
+                tinNum.getText().trim(),
+                pagIbigNum.getText().trim(),
+                empStatus.getSelectedItem().toString(),
+                empPosition.getSelectedItem().toString(),
+                empSupervisor.getSelectedItem().toString(),
+                Double.parseDouble(empBasicSalary.getText().trim()),
+                Double.parseDouble(empRiceSubsidy.getText().trim()),
+                Double.parseDouble(empPhoneAllwc.getText().trim()),
+                Double.parseDouble(empClothingAllwc.getText().trim()),
+                Double.parseDouble(empSemiMonthlyRate.getText().trim()),
+                Double.parseDouble(empHourlyRate.getText().trim())
+            );
 
-        DataHandler.updateEmployeeInCSV(updated);
+            DataHandler.updateEmployeeInCSV(updated);
+            JOptionPane.showMessageDialog(this, 
+                "Employee information saved successfully.",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
 
-           JOptionPane.showMessageDialog(this, 
-            "Employee information saved successfully.",
-            "Success",
-            JOptionPane.INFORMATION_MESSAGE);
-           
-        if (employeeListRefresher!= null) {
-            employeeListRefresher.loadEmployeesToTable();
+            if (employeeListRefresher!= null) {
+                employeeListRefresher.loadEmployeesToTable();
+            }
+
+            this.dispose();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter valid numbers for salary fields.",
+                "Input Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, 
+                "An error occurred while saving the employee information:\n" + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
-        
-        this.dispose();
-
-
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, 
-            "Please enter valid numbers for salary fields.",
-            "Input Error",
-            JOptionPane.ERROR_MESSAGE);
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, 
-            "An error occurred while saving the employee information:\n" + ex.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-    }
 
     }//GEN-LAST:event_saveEmpButtonActionPerformed
 
@@ -745,30 +745,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         setEditMode(false);
         loadEmployeeDetails(empNum.getText().trim());
     }//GEN-LAST:event_cancelEmpButtonActionPerformed
-
-    private void applyCustomFont() {
-        empFullName.setFont(CustomFont.getExtendedSemiBold(14f));
-    }
-    
-    private void setEditMode(boolean isEditing) {
-    for (JTextField field : empInfoFieldList) {
-        boolean isEmpNum = field == empNum;
-        field.setEditable(isEditing && !isEmpNum);
-        field.setBackground(isEmpNum ? new java.awt.Color(240, 240, 240) :
-                                       (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
-        field.setFocusable(isEditing && !isEmpNum);
-    }
-
-    empStatus.setEnabled(isEditing);
-    empPosition.setEnabled(isEditing);
-    empSupervisor.setEnabled(isEditing);
-
-    saveEmpButton.setVisible(isEditing);
-    cancelEmpButton.setVisible(isEditing);
-    editEmpButton.setVisible(!isEditing);
-    deleteEmpButton.setVisible(!isEditing);
-}
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField address;

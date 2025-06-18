@@ -247,5 +247,50 @@ public class DataHandler {
             return 0.0;
         }
     }
+    
+        /**
+     * Removes all time logs related to a specific employee.
+     * @param employeeNumber Employee number to filter logs by.
+     */
+    public static void deleteTimeLogsByEmployeeNumber(String employeeNumber) {
+        List<EmployeeTimeLogs> logs = readEmployeeTimeLogs();
+
+        boolean removed = logs.removeIf(log -> log.getEmployeeNumber().equals(employeeNumber));
+
+        if (removed) {
+            writeEmployeeTimeLogs(logs);
+            System.out.println("🗑️ Time logs for Employee #" + employeeNumber + " removed.");
+        } else {
+            System.out.println("⚠️ No time logs found for Employee #" + employeeNumber);
+        }
+    }
+    
+    /**
+     * Writes the list of employee time logs back to the CSV.
+     */
+    public static void writeEmployeeTimeLogs(List<EmployeeTimeLogs> logs) {
+        try (Writer writer = Files.newBufferedWriter(TIME_LOG_CSV);
+             CSVWriter csvWriter = new CSVWriter(writer,
+                     CSVWriter.DEFAULT_SEPARATOR,
+                     CSVWriter.DEFAULT_QUOTE_CHARACTER,
+                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                     CSVWriter.RFC4180_LINE_END)) {
+
+            // Write header
+            csvWriter.writeNext(new String[] {
+                "Employee #", "Last Name", "First Name", "Date", "Log In", "Log Out"
+            });
+
+            for (EmployeeTimeLogs log : logs) {
+                csvWriter.writeNext(log.toCSVArray());
+            }
+
+            System.out.println("✅ Time log data written to CSV.");
+        } catch (IOException e) {
+            System.err.println("Error writing time logs: " + e.getMessage());
+        }
+    }
+
+
 
 }

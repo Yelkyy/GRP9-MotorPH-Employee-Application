@@ -11,12 +11,12 @@ import java.util.List;
 public class EmployeeTimeLogs {
 
     // Employee time log details: personal info and time logs
-    private String employeeNumber;
-    private String lastName;
-    private String firstName;
-    private LocalDate date; // Changed to LocalDate for better date handling
-    private String logIn;
-    private String logOut;
+    private final String employeeNumber;
+    private final String lastName;
+    private final String firstName;
+    private final LocalDate date; // Changed to LocalDate for better date handling
+    private final String logIn;
+    private final String logOut;
 
     // List of possible date formats to handle different formats
     private static final List<DateTimeFormatter> DATE_FORMATS = Arrays.asList(
@@ -103,4 +103,16 @@ public class EmployeeTimeLogs {
                 " | Date: " + getDate() + " | Log In: " + logIn + " | Log Out: " + logOut +
                 " | Hours Worked: " + getHoursWorked();
     }
+    
+    public String[] toCSVArray() {
+        return new String[] {
+            employeeNumber,
+            lastName,
+            firstName,
+            (date != null) ? date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) : "",
+            logIn,
+            logOut
+        };
+    }
+
 }
