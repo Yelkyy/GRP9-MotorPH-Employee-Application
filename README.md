@@ -1,12 +1,15 @@
 # MotorPH Payroll Management System
 
-**MotorPH Payroll Management System** is a desktop application designed to streamline payroll processing and employee management for MotorPH. The system provides a user-friendly interface to manage employee data, view pay periods, and support HR administrative tasks efficiently.
+**MotorPH Payroll Management System** is a desktop application designed to streamline payroll processing and employee management for MotorPH. The system provides a user-friendly interface to manage employee records, process payrolls, and view detailed payslips.
 
 ---
 
 ## Overview
 
-This project delivers a comprehensive payroll management solution that aligns with the MotorPH branding and functional requirements. It streamlines key HR tasks such as managing employee records, navigating pay periods, and processing payroll coverage, based on specifications from the MPHCR01, MPHCR02 and MPHCR03 change requests.
+This system is built to support HR and payroll operations by handling employee records, pay period coverage, payslip generation, and more. It incorporates specifications from the following change requests:
+- **MPHCR01** – Core employee data management
+- **MPHCR02** – Pay period processing and automation
+- **MPHCR03** – Payslip view panel and payroll breakdown logic
 
 ---
 
@@ -39,10 +42,12 @@ This project delivers a comprehensive payroll management solution that aligns wi
 │   │   ├── Attendance.java
 │   │   ├── Dashboard.java
 │   │   ├── DisplayEmployeeInfo.java
+│   │   ├── DisplayPayruns.java
 │   │   ├── EmployeePanel.java
 │   │   ├── HomePanel.Java
 │   │   ├── LoginScreen.java
-│   │   ├── Payroll.java
+│   │   ├── PayrollVer2.java
+│   │   ├── PayslipViewPanel.java
 │   │   ├── Undermaintenance.java
 |   ├── utils/
 │   │   │   ├──EmployeeDataUtil.java
@@ -60,8 +65,13 @@ This project delivers a comprehensive payroll management solution that aligns wi
 📅 Payroll Period Handling
 - Dynamic display of current pay periods based on system date
 
-🔍 Search
-- Search bar for quick employee record lookup
+📄 Payslip View Panel
+- Breakdown of deductions (SSS, PhilHealth, Pag-IBIG, Tax)
+- Displays net pay and total compensation
+- Integrated with time logs and deduction calculations
+
+🔍 Quick Employee Search
+- Search bar in employee panel for fast lookup
 
 💡 Modern Interface
 - Clean and consistent GUI using Java Swing
