@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,7 +16,7 @@ import motorph.service.PayrollService;
 import motorph.ui.components.CustomFont;
 
 
-import javax.swing.JFrame;
+
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -192,21 +191,19 @@ public class PayrollVer2 extends javax.swing.JPanel {
     }
     
     private void openDisplayPayrollList(String payPeriod, String payDate) {
-        JFrame parentFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this); 
-        DisplayPayrollList dialog = new DisplayPayrollList(parentFrame);     
+        DisplayPayruns displayPanel = new DisplayPayruns();     
         
-        dialog.setPayPeriod(payPeriod);  // Set "January 1 - January 15"
-        dialog.setPayDay(payDate);       // Set actual pay date (e.g., "January 15, 2025")
-        dialog.setPayrollType("Semi-Monthly");
+        displayPanel.setPayPeriod(payPeriod);  // Set "January 1 - January 15"
+        displayPanel.setPayDay(payDate);       // Set actual pay date (e.g., "January 15, 2025")
+        displayPanel.setPayrollType("Semi-Monthly");
 
         // Parse pay date string to LocalDate
         LocalDate cutoffDate = LocalDate.parse(payDate, DateTimeFormatter.ofPattern("MMMM d, yyyy"));
         int employeeCount = countEmployeesPaidOn(cutoffDate);
-        dialog.setTotalEmployees(employeeCount);
-        dialog.setTableData(payDate);  
+        displayPanel.setTotalEmployees(employeeCount);
+        displayPanel.setTableData(payDate);  
 
-        dialog.setLocationRelativeTo(null);  // Center the dialog
-        dialog.setVisible(true);            
+        Dashboard.showPanel(displayPanel);
     }
 
 

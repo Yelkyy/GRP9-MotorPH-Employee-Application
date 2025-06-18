@@ -34,4 +34,15 @@ public class EmployeeDataUtil {
             .filter(log -> log.getEmployeeNumber().equals(empId))
             .toList();
     }
+    
+    public static class DeductionBreakdown {
+        public double sss;
+        public double philhealth;
+        public double pagibig;
+        public double tax;
+        public double lateUndertime;
+        public double totalDeductions;
+        public double netPay;
+    }
+
 }

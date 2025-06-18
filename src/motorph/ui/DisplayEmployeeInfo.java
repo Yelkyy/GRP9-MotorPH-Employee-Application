@@ -75,6 +75,9 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             address.setText(emp.getAddress());
             phoneNum.setText(emp.getPhoneNumber());
             sssNum.setText(emp.getSssNumber());
+            philHealthNum.setText(emp.getPhilhealthNumber());
+            tinNum.setText(emp.getTinNumber());
+            pagIbigNum.setText(emp.getPagIbigNumber());
             // Job Info
             empStatus.setSelectedItem(emp.getStatus());
             empPosition.setSelectedItem(emp.getPosition());
@@ -115,6 +118,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             for (JTextField field : empInfoFieldList) {
                 boolean isEmpNum = field == empNum;
                 field.setEditable(isEditing && !isEmpNum);
+                field.setFocusable(isEditing && !isEmpNum);
+                field.setCursor(new java.awt.Cursor(isEditing ? java.awt.Cursor.TEXT_CURSOR : java.awt.Cursor.DEFAULT_CURSOR));
                 field.setBackground(isEmpNum ? new java.awt.Color(240, 240, 240) :
                                                (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
                 field.setFocusable(isEditing && !isEmpNum);

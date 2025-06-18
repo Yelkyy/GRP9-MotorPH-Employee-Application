@@ -12,6 +12,8 @@ import java.time.Duration;
 
 import motorph.model.EmployeeDetails;
 import motorph.model.EmployeeTimeLogs;
+import motorph.utils.EmployeeDataUtil;
+import motorph.utils.EmployeeDataUtil.DeductionBreakdown;
 
 public class PayrollService {
 
@@ -53,7 +55,7 @@ public class PayrollService {
         List<EmployeeTimeLogs> filteredLogs = filterLogsByDateRange(logs, monthYear, startDay, endDay);
         printPayrollSummary(employee, filteredLogs, monthYear, startDay, endDay);
     }
-
+      
     private static int choosePayPeriod() {
         System.out.println("Select Pay Period: [1] 1-15 or [2] 16-EndOfMonth");
         int choice = scanner.nextInt();
@@ -299,4 +301,44 @@ public class PayrollService {
             return 0.0;
         }
     }
+    
+    public static DeductionBreakdown computeDeductions(EmployeeDetails employee, 
+            List<EmployeeTimeLogs> logs, String monthYear, int payPeriod) {
+        DeductionBreakdown result = new DeductionBreakdown();
+
+        YearMonth yearMonth = YearMonth.parse(monthYear, DateTimeFormatter.ofPattern("MM-yyyy"));
+        int lastDayOfMonth = yearMonth.lengthOfMonth();
+        int startDay = (payPeriod == 1) ? 1 : 16;
+        int endDay = (payPeriod == 1) ? 15 : lastDayOfMonth;
+        boolean hasDeductions = (endDay != 15);
+
+        double semiMonthlyBasic = employee.getBasicSalary() / 2;
+        double totalComp = employee.getRiceSubsidy() + employee.getPhoneAllowance() + employee.getClothingAllowance();
+
+        List<EmployeeTimeLogs> filteredLogs = filterLogsByDateRange(logs, monthYear, startDay, endDay);
+        List<String[]> lateDeductions = hasDeductions ? calculateLateUndertime(filteredLogs) : new ArrayList<>();
+        double lateUndertime = hasDeductions ? extractTotalLateDeductions(lateDeductions) : 0.0;
+
+        result.lateUndertime = lateUndertime;
+        result.sss = hasDeductions ? calculateSSS(semiMonthlyBasic) : 0.0;
+        result.philhealth = hasDeductions ? calculatePhilHealth(semiMonthlyBasic) : 0.0;
+        result.pagibig = hasDeductions ? calculatePagIbig(semiMonthlyBasic) : 0.0;
+
+        double nonTaxDeductions = result.lateUndertime + result.sss + result.philhealth + result.pagibig;
+        double taxableIncome = Math.max(0, semiMonthlyBasic - nonTaxDeductions);
+
+        result.tax = hasDeductions ? calculateTax(taxableIncome) : 0.0;
+        result.totalDeductions = nonTaxDeductions + result.tax;
+        result.netPay = semiMonthlyBasic + totalComp - result.totalDeductions;
+
+        return result;
+    }
+    
+    public static DeductionBreakdown computeDeductions(EmployeeDetails emp, String monthYear, int payPeriod) {
+        List<EmployeeTimeLogs> logs = EmployeeDataUtil.getTimeLogsForEmployee(emp.getEmployeeNumber());
+        return computeDeductions(emp, logs, monthYear, payPeriod);
+    }
+
+
+    
 }
