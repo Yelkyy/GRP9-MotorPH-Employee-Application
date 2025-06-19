@@ -13,7 +13,7 @@ public class Dashboard extends javax.swing.JFrame {
     public Dashboard() {
         initComponents();
         mainBody = body;
-        menu1.setMainPanel(body);
+        menu2.setMainPanel(body);
         showPanel(new HomePanel());
     }
 
@@ -30,7 +30,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        menu1 = new motorph.ui.components.Menu();
+        menu2 = new motorph.ui.components.Menu();
         body = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -43,10 +43,7 @@ public class Dashboard extends javax.swing.JFrame {
         jScrollPane2.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        menu1.setBackground(new java.awt.Color(3, 47, 71));
-        menu1.setForeground(new java.awt.Color(255, 255, 255));
-        jScrollPane2.setViewportView(menu1);
+        jScrollPane2.setViewportView(menu2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -90,6 +87,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel body;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private motorph.ui.components.Menu menu1;
+    private motorph.ui.components.Menu menu2;
     // End of variables declaration//GEN-END:variables
 }

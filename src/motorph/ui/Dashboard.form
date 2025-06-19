@@ -82,6 +82,10 @@
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="motorph.ui.components.Menu" name="menu2">
+            </Component>
+          </SubComponents>
         </Container>
       </SubComponents>
     </Container>

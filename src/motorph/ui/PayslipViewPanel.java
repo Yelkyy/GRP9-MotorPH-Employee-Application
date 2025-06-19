@@ -199,7 +199,7 @@ public class PayslipViewPanel extends JPanel {
         philHealthVal = new javax.swing.JLabel();
         pagIbigVal = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(204, 204, 204));
         setMaximumSize(new java.awt.Dimension(1054, 720));
         setMinimumSize(new java.awt.Dimension(1054, 720));
 
@@ -234,23 +234,20 @@ public class PayslipViewPanel extends JPanel {
 
         logohere.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         logohere.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        logohere.setText("MOTOR PH LOGO HERE");
+        logohere.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/MotorPH Logo 2.png"))); // NOI18N
 
         javax.swing.GroupLayout logoboxLayout = new javax.swing.GroupLayout(logobox);
         logobox.setLayout(logoboxLayout);
         logoboxLayout.setHorizontalGroup(
             logoboxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoboxLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(logohere)
-                .addGap(445, 445, 445))
+            .addComponent(logohere, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         logoboxLayout.setVerticalGroup(
             logoboxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoboxLayout.createSequentialGroup()
-                .addContainerGap(50, Short.MAX_VALUE)
-                .addComponent(logohere)
-                .addGap(37, 37, 37))
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addComponent(logohere, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         fullnameBox.setBackground(new java.awt.Color(55, 156, 207));
@@ -1117,7 +1114,7 @@ public class PayslipViewPanel extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
