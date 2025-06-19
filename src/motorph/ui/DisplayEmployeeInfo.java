@@ -49,8 +49,10 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         for (JTextField field : empInfoFieldList) {
             boolean isEmpNum = field == empNum;
             field.setEditable(false);
+            field.setFocusable(false);
             field.setBackground(new java.awt.Color(240, 240, 240));
-            field.setFocusable(!isEmpNum);
+            field.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            field.setHighlighter(null);
         }
         
         empStatus.setEnabled(false);
@@ -124,7 +126,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                                                (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
                 field.setFocusable(isEditing && !isEmpNum);
             }
-
+            
             empStatus.setEnabled(isEditing);
             empPosition.setEnabled(isEditing);
             empSupervisor.setEnabled(isEditing);
@@ -134,10 +136,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             editEmpButton.setVisible(!isEditing);
             deleteEmpButton.setVisible(!isEditing);
         }
-
-
-
-
 
 
     @SuppressWarnings("unchecked")
@@ -495,7 +493,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                 .addComponent(editEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(deleteEmpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGap(60, 60, 60))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

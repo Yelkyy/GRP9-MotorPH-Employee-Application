@@ -27,7 +27,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" pref="993" max="32767" attributes="0"/>
+          <Component id="jPanel1" alignment="0" pref="993" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -182,7 +182,7 @@
                   <Component id="editEmpButton" min="-2" pref="114" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="deleteEmpButton" min="-2" pref="114" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

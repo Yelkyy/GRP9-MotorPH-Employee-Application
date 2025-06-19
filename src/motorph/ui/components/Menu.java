@@ -3,6 +3,7 @@ package motorph.ui.components;
 import motorph.ui.PayrollVer2;
 import motorph.ui.HomePanel;
 import motorph.ui.Attendance;
+import motorph.model.MenuHandler;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -10,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +30,7 @@ public class Menu extends JComponent {
 
     private MigLayout layout;
     private JPanel mainPanel;
+    private MenuItem selectedItem = null;
 
     /**
      * Allows the Dashboard to inject the main display panel (body) for content swapping.
@@ -38,14 +41,13 @@ public class Menu extends JComponent {
     }
 
     // Menu structure: {Main Menu, SubItem1, SubItem2...}
-    private String[][] menuItems = new String[][] {
-            { "Dashboard" },
-            { "Employee" },
-            { "Attendance" },
-            { "Payroll" },
-            
-            
+    private MenuHandler[] menuItems = new MenuHandler[] {
+        new MenuHandler("0White", "Dashboard", MenuHandler.menuType.MENU),
+        new MenuHandler("2White", "Employee", MenuHandler.menuType.MENU),
+        new MenuHandler("3White", "Attendance", MenuHandler.menuType.MENU),
+        new MenuHandler("3", "Payroll", MenuHandler.menuType.MENU)
     };
+
     
     /**
      * Constructs the Menu and initializes layout and items.
@@ -54,27 +56,20 @@ public class Menu extends JComponent {
         init();
     }
     
-    /**
-     * Initializes the menu layout and populates it with menu items.
-     */
     private void init() {
-        layout = new MigLayout("wrap 1, fillx, gapy 0, inset 2", "fill");
+        layout = new MigLayout("wrap 1, fillx, gapy 0, inset 2", "fill", "top");
         setLayout(layout);
         setOpaque(true);
 
         for (int i = 0; i < menuItems.length; i++) {
-            addMenu(menuItems[i][0], i);
+            MenuHandler handler = menuItems[i];
+            addMenu(handler, i);
         }
-
     }
-    /**
-     * Adds a main menu item and optionally links its sub-items.
-     *
-     * @param menuName the name of the main menu item
-     * @param index the index in the menuItems array
-     */
-    private void addMenu(String menuName, int index) {
-        MenuItem item = new MenuItem(menuName, index);
+
+    private void addMenu(MenuHandler handler, int index) {
+        MenuItem item = new MenuItem(handler.getName(), index);
+        item.setIcon(handler.toIcon());  // Uses your existing method!
 
         item.addActionListener(new ActionListener() {
             @Override
@@ -82,7 +77,7 @@ public class Menu extends JComponent {
                 if (mainPanel != null) {
                     mainPanel.removeAll();
 
-                    switch (menuName) {
+                    switch (handler.getName()) {
                         case "Dashboard":
                             mainPanel.add(new HomePanel());
                             break;
@@ -100,13 +95,17 @@ public class Menu extends JComponent {
                     mainPanel.revalidate();
                     mainPanel.repaint();
                 }
+                if (selectedItem != null) {
+                    selectedItem.setSelected(false);
+                }
+                item.setSelected(true);
+                selectedItem = item;
             }
         });
 
         add(item);
-        revalidate();
-        repaint();
     }
+
 
     @Override
     protected void paintComponent(Graphics grphcs) {
@@ -115,4 +114,22 @@ public class Menu extends JComponent {
         g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         super.paintComponent(grphcs);
     }
+    
+    public void selectMenuItemByName(String menuName) {
+        for (Component comp : getComponents()) {
+            if (comp instanceof MenuItem) {
+                MenuItem item = (MenuItem) comp;
+                if (item.getText().equals(menuName)) {
+                    if (selectedItem != null) {
+                        selectedItem.setSelected(false);
+                    }
+                    item.setSelected(true);
+                    selectedItem = item;
+                    break;
+                }
+            }
+        }
+    }
+
+    
 }

@@ -38,8 +38,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="26" max="32767" attributes="0"/>
+              <Component id="jPanel1" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -136,9 +136,9 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jPanel12" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel15" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jPanel20" max="32767" attributes="0"/>
+                      <Component id="jPanel15" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jPanel12" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -770,7 +770,7 @@
                           <Component id="jLabel37" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ClothAllw" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="59" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -899,7 +899,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel31" max="32767" attributes="0"/>
+                      <Component id="jLabel31" pref="26" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1064,7 +1064,7 @@
                           <Component id="jLabel52" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="deducTax" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="27" max="32767" attributes="0"/>
+                      <EmptySpace pref="37" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

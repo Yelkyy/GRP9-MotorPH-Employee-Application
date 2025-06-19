@@ -1,56 +1,79 @@
 package motorph.ui.components;
 
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-/**
- * MenuItem represents both main and sub-menu buttons in the dashboard sidebar menu.
- * It supports styling for active submenu items and identifies its position in the menu structure.
- */
 public class MenuItem extends JButton {
-    
     private int index;
-    
-    /**
-     * @return the index
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    /**
-     * @param index the index to set
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
-   
+    private boolean selected = false;
+    private boolean hover = false;
 
     public MenuItem(String name, int index) {
         super(name);
         this.index = index;
-        
-        // Visual styling
+
         setContentAreaFilled(false);
         setOpaque(false);
         setBorderPainted(false);
         setFocusPainted(false);
-        
         setForeground(new Color(230, 230, 230));
-        setHorizontalAlignment(SwingConstants.LEFT);
-        setBorder(new EmptyBorder(9, 10, 9, 10));
-        setIconTextGap(10);
         setFont(CustomFont.getExtendedRegular(14f));
+
+        setHorizontalAlignment(SwingConstants.LEFT);
+        setHorizontalTextPosition(SwingConstants.RIGHT);
+        setVerticalAlignment(SwingConstants.CENTER);
+        setVerticalTextPosition(SwingConstants.CENTER);
+        setIconTextGap(10);
+        setBorder(new EmptyBorder(8, 16, 8, 10));
+
+        // Hover tracking
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hover = true;
+                repaint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hover = false;
+                repaint();
+            }
+        });
     }
-    
-    
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        repaint();
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+
+        if (selected) {
+            g2.setColor(new Color(3, 32, 48));  // Selected color
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        } else if (hover) {
+            g2.setColor(new Color(0, 90, 130)); // Hover color
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        }
+
+        g2.dispose();
+        super.paintComponent(g);  // Draw text and icon
+    }
 }
