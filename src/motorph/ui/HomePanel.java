@@ -156,7 +156,7 @@ public class HomePanel extends javax.swing.JPanel {
                 .addGroup(todayLeaveBox2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(todayLeaveNum)
                     .addComponent(totalLeaveText))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         todayLeaveBox2Layout.setVerticalGroup(
             todayLeaveBox2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
