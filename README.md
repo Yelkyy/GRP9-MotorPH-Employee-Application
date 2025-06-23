@@ -11,50 +11,6 @@ This system is built to support HR and payroll operations by handling employee r
 - **MPHCR02** – Pay period processing and automation
 - **MPHCR03** – Payslip view panel and payroll breakdown logic
 
----
-
-## Folder Structure
-```
-/project-root
-│── src/
-|   ├── icons/
-│   ├── model/
-│   │   ├── EmployeeDetails.java
-│   │   ├── EmployeeTimeLogs.java
-│   │   ├── MenuHandler.java
-│   │   ├── User.java
-│   ├── repository/
-│   │   ├── DataHandler.java
-│   ├── service/
-│   │   ├── EmployeeService.java
-│   │   ├── PayrollService.java
-│   ├── ui/
-│   │   ├── components/
-│   │   │   ├── CustomFont.java
-│   │   │   ├── Menu.java
-│   │   │   ├── MenuAnimation.java
-│   │   │   ├── MenuItem.java
-│   │   │   ├── MyRender.java
-│   │   │   ├── RoundedPanel.java
-│   │   ├── main/
-│   │   │   ├── App.java
-│   │   ├── AddEmployee.java
-│   │   ├── Attendance.java
-│   │   ├── Dashboard.java
-│   │   ├── DisplayEmployeeInfo.java
-│   │   ├── DisplayPayruns.java
-│   │   ├── EmployeePanel.java
-│   │   ├── HomePanel.Java
-│   │   ├── LoginScreen.java
-│   │   ├── PayrollVer2.java
-│   │   ├── PayslipViewPanel.java
-│   │   ├── Undermaintenance.java
-|   ├── utils/
-│   │   │   ├──EmployeeDataUtil.java
-│── fonts/
-│   ├── NeuePlakExtendedBold.ttf
-│   ├── NeuePlakExtendedRegular.ttf
-|   ├── NeuePlakSemiBold.ttf
 ```
 ## Features
 ✅ Employee Record Management
@@ -87,6 +43,10 @@ This system is built to support HR and payroll operations by handling employee r
 
 1. Click **Code** button on this repository page.
 2. Open the project in your IDE/editor and run the application.
-3. When the Login Screen appears, use the following credentials to log in:
-   - **Email:** `admin123@gmail.com`
-   - **Password:** `admin`
+3. Use the following credentials (based on the `MotorPH Users.csv` file):
+   - **Email:** `brad.sanjose@motorph.com`
+     **Password:** `10007`
+   - **Email:** `alice.romualdez@motorph.com`
+     **Password:** `10008`
+   - **Email:** `rosie.atienza@motorph.com`
+     **Password:** `10009`
