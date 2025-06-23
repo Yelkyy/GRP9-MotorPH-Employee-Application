@@ -6,56 +6,17 @@
 
 ## Overview
 
-This system is built to support HR and payroll operations by handling employee records, pay period coverage, payslip generation, and more. It incorporates specifications from the following change requests:
-- **MPHCR01** – Core employee data management
-- **MPHCR02** – Pay period processing and automation
-- **MPHCR03** – Payslip view panel and payroll breakdown logic
+The MotorPH Employee App is designed to support HR and payroll operations by managing employee records, pay periods, and payslip generation.
+
+This system includes features from the following change requests:
+
+- **MPHCR01** – Employee data management  
+- **MPHCR02** – Pay period coverage and automation  
+- **MPHCR03** – Payslip viewing and payroll breakdown  
+- **MPHCR04** – Secure login using CSV-based credential validation
 
 ---
 
-## Folder Structure
-```
-/project-root
-│── src/
-|   ├── icons/
-│   ├── model/
-│   │   ├── EmployeeDetails.java
-│   │   ├── EmployeeTimeLogs.java
-│   │   ├── MenuHandler.java
-│   │   ├── User.java
-│   ├── repository/
-│   │   ├── DataHandler.java
-│   ├── service/
-│   │   ├── EmployeeService.java
-│   │   ├── PayrollService.java
-│   ├── ui/
-│   │   ├── components/
-│   │   │   ├── CustomFont.java
-│   │   │   ├── Menu.java
-│   │   │   ├── MenuAnimation.java
-│   │   │   ├── MenuItem.java
-│   │   │   ├── MyRender.java
-│   │   │   ├── RoundedPanel.java
-│   │   ├── main/
-│   │   │   ├── App.java
-│   │   ├── AddEmployee.java
-│   │   ├── Attendance.java
-│   │   ├── Dashboard.java
-│   │   ├── DisplayEmployeeInfo.java
-│   │   ├── DisplayPayruns.java
-│   │   ├── EmployeePanel.java
-│   │   ├── HomePanel.Java
-│   │   ├── LoginScreen.java
-│   │   ├── PayrollVer2.java
-│   │   ├── PayslipViewPanel.java
-│   │   ├── Undermaintenance.java
-|   ├── utils/
-│   │   │   ├──EmployeeDataUtil.java
-│── fonts/
-│   ├── NeuePlakExtendedBold.ttf
-│   ├── NeuePlakExtendedRegular.ttf
-|   ├── NeuePlakSemiBold.ttf
-```
 ## Features
 ✅ Employee Record Management
 - Add new employees
@@ -81,12 +42,16 @@ This system is built to support HR and payroll operations by handling employee r
 - Employee records are read from and written to CSV files using OpenCSV
 - Supports persistent data updates after add/edit/delete actions
 
-
+---
 
 ## How to Download and Run
 
 1. Click **Code** button on this repository page.
 2. Open the project in your IDE/editor and run the application.
-3. When the Login Screen appears, use the following credentials to log in:
-   - **Email:** `admin123@gmail.com`
-   - **Password:** `admin`
+3. Use the following credentials (based on the `MotorPH Users.csv` file):
+   - **Email:** `brad.sanjose@motorph.com`
+     **Password:** `10007`
+   - **Email:** `alice.romualdez@motorph.com`
+     **Password:** `10008`
+   - **Email:** `rosie.atienza@motorph.com`
+     **Password:** `10009`
