@@ -6,12 +6,17 @@
 
 ## Overview
 
-This system is built to support HR and payroll operations by handling employee records, pay period coverage, payslip generation, and more. It incorporates specifications from the following change requests:
-- **MPHCR01** – Core employee data management
-- **MPHCR02** – Pay period processing and automation
-- **MPHCR03** – Payslip view panel and payroll breakdown logic
+The MotorPH Employee App is designed to support HR and payroll operations by managing employee records, pay periods, and payslip generation.
 
-```
+This system includes features from the following change requests:
+
+- **MPHCR01** – Employee data management  
+- **MPHCR02** – Pay period coverage and automation  
+- **MPHCR03** – Payslip viewing and payroll breakdown  
+- **MPHCR04** – Secure login using CSV-based credential validation
+
+---
+
 ## Features
 ✅ Employee Record Management
 - Add new employees
@@ -37,7 +42,7 @@ This system is built to support HR and payroll operations by handling employee r
 - Employee records are read from and written to CSV files using OpenCSV
 - Supports persistent data updates after add/edit/delete actions
 
-
+---
 
 ## How to Download and Run
 
