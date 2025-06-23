@@ -13,6 +13,13 @@ public class MenuItem extends JButton {
     public MenuItem(String name, int index) {
         super(name);
         this.index = index;
+        
+        // Handle spacers: hide if no name
+        if (name == null || name.trim().isEmpty()) {
+            setVisible(false);
+            setEnabled(false);
+            return;
+        }
 
         setContentAreaFilled(false);
         setOpaque(false);

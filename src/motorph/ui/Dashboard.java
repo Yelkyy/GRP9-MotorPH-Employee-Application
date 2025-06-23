@@ -13,11 +13,17 @@ public class Dashboard extends javax.swing.JFrame {
     public Dashboard() {
         initComponents();
         mainBody = body;
-        
         menu1.setMainPanel(body);
-        showPanel(new HomePanel());
+
+    }
+    
+    public void personalize(String firstName) {
+        menu1.setFirstName(firstName);
+        menu1.setMainPanel(body);
+        showPanel(new HomePanel(firstName));
         menu1.selectMenuItemByName("Dashboard");
     }
+
 
     public static void showPanel(JPanel panel){
         mainBody.removeAll();
@@ -66,9 +72,9 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
 
         body.setPreferredSize(new java.awt.Dimension(1054, 720));

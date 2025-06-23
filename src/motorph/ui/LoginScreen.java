@@ -1,23 +1,15 @@
 package motorph.ui;
 
-import motorph.model.User;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import motorph.repository.DataHandler;
 
-/**
- *
- * @author jmbpj
- */
 public class LoginScreen extends javax.swing.JFrame {
-    
-    private User adminUser;
-    
+
     public LoginScreen() {
         initComponents();
-        
-        // TODO: Remove auto-login before release
-        //new Dashboard().setVisible(true);
-        //dispose(); // TODO: Remove auto-login before release
+        setLocationRelativeTo(null);
 
-        adminUser = new User("admin123@gmail.com", "admin");
     }
 
     
@@ -35,6 +27,7 @@ public class LoginScreen extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         inputPassword = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
+        showPWBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MOTORPH LOGIN");
@@ -123,6 +116,13 @@ public class LoginScreen extends javax.swing.JFrame {
             }
         });
 
+        showPWBox.setText("Show Password");
+        showPWBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPWBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout leftLayout = new javax.swing.GroupLayout(left);
         left.setLayout(leftLayout);
         leftLayout.setHorizontalGroup(
@@ -134,12 +134,13 @@ public class LoginScreen extends javax.swing.JFrame {
             .addGroup(leftLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(showPWBox, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(inputEmail)
                         .addComponent(inputPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         leftLayout.setVerticalGroup(
@@ -155,9 +156,11 @@ public class LoginScreen extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showPWBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addContainerGap(101, Short.MAX_VALUE))
         );
 
         jPanel1.add(left);
@@ -194,21 +197,29 @@ public class LoginScreen extends javax.swing.JFrame {
             return;
         }
         
-        if (email.equals(adminUser.getEmail()) && password.equals(adminUser.getPassword())) {
-            Dashboard DashbrdFrame = new Dashboard();
-            DashbrdFrame.setVisible(true);
-            DashbrdFrame.pack();
-            DashbrdFrame.setLocationRelativeTo(null);
-            this.dispose();
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Invalid emair or password", 
-                    "Login Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
-        }
+        Map<String, String> credentials = DataHandler.loadUserCredentials();
         
+        if (credentials.containsKey(email)) {
+            if (credentials.get(email).equals(password)) {
+                String firstName = DataHandler.getFirstNameByEmail(email);
+                Dashboard dashboardFrame = new Dashboard();
+                dashboardFrame.personalize(firstName);
+                dashboardFrame.setVisible(true);
+                dashboardFrame.pack();
+                dashboardFrame.setLocationRelativeTo(null);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid password.",
+                        "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid email.",
+                    "Login Failed", JOptionPane.ERROR_MESSAGE);
+        }       
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void loginButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginButtonKeyPressed
-        if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
             loginButtonActionPerformed(null);
         }
     }//GEN-LAST:event_loginButtonKeyPressed
@@ -217,9 +228,13 @@ public class LoginScreen extends javax.swing.JFrame {
         loginButtonActionPerformed(null);
     }//GEN-LAST:event_inputPasswordActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void showPWBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPWBoxActionPerformed
+        if (showPWBox.isSelected()) {
+            inputPassword.setEchoChar((char) 0);
+            } else {
+            inputPassword.setEchoChar('•');
+        }
+    }//GEN-LAST:event_showPWBoxActionPerformed
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -233,5 +248,6 @@ public class LoginScreen extends javax.swing.JFrame {
     private javax.swing.JPanel left;
     private javax.swing.JButton loginButton;
     private javax.swing.JPanel right;
+    private javax.swing.JCheckBox showPWBox;
     // End of variables declaration//GEN-END:variables
 }

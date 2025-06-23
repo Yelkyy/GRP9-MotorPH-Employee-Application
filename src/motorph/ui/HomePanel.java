@@ -14,11 +14,11 @@ public class HomePanel extends javax.swing.JPanel {
      /**
      * Constructs the HomePanel and initializes its components.
      */  
-    public HomePanel() {
+    public HomePanel(String firstName) {
         initComponents();
         applyCustomFont();
         updateTotalEmployees();
-        
+        welcomeHeader.setText("Welcome back, " + firstName + "!" );
     }
     
     private void applyCustomFont() {

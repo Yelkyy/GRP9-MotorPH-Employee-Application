@@ -14,6 +14,7 @@ public class DataHandler {
 
     private static final Path CSV_FILE = Paths.get("resources", "Copy of MotorPH Employee Data.csv");
     private static final Path TIME_LOG_CSV = Paths.get("resources", "Copy of MotorPH Employee Data Time Logs.csv");
+    private static final Path LOGIN_CSV = Paths.get("resources", "MotorPH Users.csv");
 
     private static final String[] EMPLOYEE_CSV_HEADER = {
         "Employee #", "Last Name", "First Name", "Birthday", "Address", "Phone Number",
@@ -290,7 +291,59 @@ public class DataHandler {
             System.err.println("Error writing time logs: " + e.getMessage());
         }
     }
+    
+    /**
+     * Loads user credentials from the login CSV file.
+     * @return Map of username-password pairs.
+     */
+    public static Map<String, String> loadUserCredentials() {
+        Map<String, String> credentials = new HashMap<>();
 
+        try (BufferedReader br = Files.newBufferedReader(LOGIN_CSV)) {
+            String line;
+            boolean firstLine = true;
 
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false; // skip header
+                    continue;
+                }
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    String username = parts[0].trim();
+                    String password = parts[1].trim();
+                    credentials.put(username, password);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading user credentials: " + e.getMessage());
+        }
 
+        return credentials;
+    }
+    
+    public static String getFirstNameByEmail(String email) {
+        try (BufferedReader br = Files.newBufferedReader(LOGIN_CSV)) {
+            String line;
+            boolean firstLine = true;
+
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue; // skip header
+                }
+
+                String[] parts = line.split(",");
+                if (parts.length >= 3 && parts[0].trim().equalsIgnoreCase(email.trim())) {
+                    return parts[2].trim();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading first name: " + e.getMessage());
+        }
+
+        return "User";
+    }
+
+    
 }
