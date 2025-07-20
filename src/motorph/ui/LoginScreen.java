@@ -2,7 +2,9 @@ package motorph.ui;
 
 import java.util.Map;
 import javax.swing.JOptionPane;
+import motorph.model.User;
 import motorph.repository.DataHandler;
+import motorph.utils.UserAuthentication;
 
 public class LoginScreen extends javax.swing.JFrame {
 
@@ -11,6 +13,18 @@ public class LoginScreen extends javax.swing.JFrame {
         setLocationRelativeTo(null);
 
     }
+    
+    private void updateLoginButtonLabel() {
+        String selectedLevel = (String) userLevelDd.getSelectedItem();
+        if ("Admin".equalsIgnoreCase(selectedLevel)) {
+            loginButton.setText("Login as Admin");
+        } else if ("User".equalsIgnoreCase(selectedLevel)) {
+            loginButton.setText("Login");
+        } else {
+            loginButton.setText("Login");
+        }
+    }
+
 
     
     @SuppressWarnings("unchecked")
@@ -22,12 +36,14 @@ public class LoginScreen extends javax.swing.JFrame {
         companylogo = new javax.swing.JLabel();
         left = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        userLbl = new javax.swing.JLabel();
         inputEmail = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        passwordLbl = new javax.swing.JLabel();
         inputPassword = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
         showPWBox = new javax.swing.JCheckBox();
+        userLevelLbl = new javax.swing.JLabel();
+        userLevelDd = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MOTORPH LOGIN");
@@ -79,21 +95,17 @@ public class LoginScreen extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 66, 102));
         jLabel1.setText("LOGIN");
 
-        jLabel2.setBackground(new java.awt.Color(102, 102, 102));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Email");
+        userLbl.setBackground(new java.awt.Color(102, 102, 102));
+        userLbl.setText("Username");
 
-        inputEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        inputEmail.setForeground(new java.awt.Color(102, 102, 102));
         inputEmail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputEmailActionPerformed(evt);
             }
         });
 
-        jLabel3.setBackground(new java.awt.Color(102, 102, 102));
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Password");
+        passwordLbl.setBackground(new java.awt.Color(102, 102, 102));
+        passwordLbl.setText("Password");
 
         inputPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +114,6 @@ public class LoginScreen extends javax.swing.JFrame {
         });
 
         loginButton.setBackground(new java.awt.Color(0, 66, 102));
-        loginButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         loginButton.setForeground(new java.awt.Color(255, 255, 255));
         loginButton.setText("Login");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -116,10 +127,24 @@ public class LoginScreen extends javax.swing.JFrame {
             }
         });
 
+        showPWBox.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         showPWBox.setText("Show Password");
         showPWBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showPWBoxActionPerformed(evt);
+            }
+        });
+
+        userLevelLbl.setBackground(new java.awt.Color(102, 102, 102));
+        userLevelLbl.setText("User level");
+
+        userLevelDd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Admin", "User" }));
+        userLevelDd.setMaximumSize(null);
+        userLevelDd.setMinimumSize(null);
+        userLevelDd.setPreferredSize(new java.awt.Dimension(64, 22));
+        userLevelDd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userLevelDdActionPerformed(evt);
             }
         });
 
@@ -133,14 +158,15 @@ public class LoginScreen extends javax.swing.JFrame {
                 .addGap(135, 135, 135))
             .addGroup(leftLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(userLevelLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(showPWBox, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(inputEmail)
-                        .addComponent(inputPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(inputEmail)
+                    .addComponent(inputPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                    .addComponent(userLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userLevelDd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         leftLayout.setVerticalGroup(
@@ -148,19 +174,23 @@ public class LoginScreen extends javax.swing.JFrame {
             .addGroup(leftLayout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(userLevelLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(userLevelDd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addComponent(userLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2)
+                .addComponent(passwordLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showPWBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
                 .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         jPanel1.add(left);
@@ -188,34 +218,61 @@ public class LoginScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_inputEmailActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        String email = inputEmail.getText();
-        String password = new String(inputPassword.getPassword());
-        
-        if(email.isEmpty() || password.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please enter both email and password.", 
-                    "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        String email = inputEmail.getText().trim();
+        String password = new String(inputPassword.getPassword()).trim();
+        String selectedLevel = (String) userLevelDd.getSelectedItem();
+
+        if (selectedLevel.equals("None")) {
+            JOptionPane.showMessageDialog(this, "Please select a valid user level.",
+                    "User Level Required", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        Map<String, String> credentials = DataHandler.loadUserCredentials();
-        
-        if (credentials.containsKey(email)) {
-            if (credentials.get(email).equals(password)) {
-                String firstName = DataHandler.getFirstNameByEmail(email);
-                Dashboard dashboardFrame = new Dashboard();
-                dashboardFrame.personalize(firstName);
-                dashboardFrame.setVisible(true);
-                dashboardFrame.pack();
-                dashboardFrame.setLocationRelativeTo(null);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid password.",
-                        "Login Failed", JOptionPane.ERROR_MESSAGE);
+
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both username and password.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        User user = UserAuthentication.authenticate(email, password);
+
+        if (user != null) {
+            // Check if user role matches the selected user level
+            boolean isValid = false;
+
+            if ("Admin".equalsIgnoreCase(selectedLevel) && user.isAdmin()) {
+                isValid = true;
+            } else if ("User".equalsIgnoreCase(selectedLevel) && (user.isHR() || user.isEmployee())) {
+                isValid = true;
             }
+
+            if (!isValid) {
+                JOptionPane.showMessageDialog(this,
+                        "User level mismatch",
+                        "Login Failed", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Launch appropriate dashboard
+            if (user.isAdmin()) {
+                motorph.ui.Dashboard dashboardFrame = new motorph.ui.Dashboard(); 
+                dashboardFrame.personalize(user.getFullName());
+                dashboardFrame.setVisible(true);
+            } else if (user.isHR()) {
+                motorph.ui.Dashboard dashboardFrame = new motorph.ui.Dashboard();
+                dashboardFrame.personalize(user.getFullName());
+                dashboardFrame.setVisible(true);
+            } else if (user.isEmployee()) {
+                motorph.ui.employeeRole.Dashboard empDash = new motorph.ui.employeeRole.Dashboard(user);
+                empDash.setVisible(true);
+            }
+
+            this.dispose(); // Close login screen
+
         } else {
-            JOptionPane.showMessageDialog(this, "Invalid email.",
+            JOptionPane.showMessageDialog(this, "Invalid username or password.",
                     "Login Failed", JOptionPane.ERROR_MESSAGE);
-        }       
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void loginButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginButtonKeyPressed
@@ -235,6 +292,10 @@ public class LoginScreen extends javax.swing.JFrame {
             inputPassword.setEchoChar('•');
         }
     }//GEN-LAST:event_showPWBoxActionPerformed
+
+    private void userLevelDdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userLevelDdActionPerformed
+        updateLoginButtonLabel();
+    }//GEN-LAST:event_userLevelDdActionPerformed
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -242,12 +303,14 @@ public class LoginScreen extends javax.swing.JFrame {
     private javax.swing.JTextField inputEmail;
     private javax.swing.JPasswordField inputPassword;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel left;
     private javax.swing.JButton loginButton;
+    private javax.swing.JLabel passwordLbl;
     private javax.swing.JPanel right;
     private javax.swing.JCheckBox showPWBox;
+    private javax.swing.JLabel userLbl;
+    private javax.swing.JComboBox<String> userLevelDd;
+    private javax.swing.JLabel userLevelLbl;
     // End of variables declaration//GEN-END:variables
 }

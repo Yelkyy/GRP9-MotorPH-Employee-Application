@@ -1,4 +1,4 @@
-package motorph.ui;
+package motorph.ui.panels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +26,8 @@ public class AddEmployee extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setupBirthdayField();
+        loadSupervisorsDropdown();
+
         
         
         newEmployeeAddField = Arrays.asList(
@@ -50,6 +52,20 @@ public class AddEmployee extends javax.swing.JDialog {
             e.printStackTrace();
         }
     }
+    
+    private void loadSupervisorsDropdown() {
+        List<EmployeeDetails> allEmployees = DataHandler.readEmployeeDetails();
+        javax.swing.DefaultComboBoxModel<String> model = new javax.swing.DefaultComboBoxModel<>();
+        model.addElement("Select Supervisor");
+
+        for (EmployeeDetails emp : allEmployees) {
+            String fullName = emp.getLastName() + ", " + emp.getFirstName();
+            model.addElement(fullName);
+        }
+
+        empSupervisor.setModel(model);
+    }
+
 
 
 
@@ -253,7 +269,7 @@ public class AddEmployee extends javax.swing.JDialog {
             }
         });
 
-        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor", "Garcia, Manuel III", "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "Aquino, Bianca Sofia", "Alvaro, Roderick", "Salcedo Anthony", "Romualdez, Fredrick", "Mata, Christian", "De Leon, Selena", "Reyes, Isabella" }));
+        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor" }));
         empSupervisor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 empSupervisorActionPerformed(evt);

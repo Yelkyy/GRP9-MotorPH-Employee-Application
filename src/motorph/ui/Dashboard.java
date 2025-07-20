@@ -1,12 +1,7 @@
 package motorph.ui;
 
-import java.awt.Font;
 import javax.swing.JPanel;
 
-/**
- * The Dashboard class serves as the main window of the MotorPH system.
- * It initializes the user interface layout and embeds dynamic content panels such as the HomePanel.
- */
 public class Dashboard extends javax.swing.JFrame {
     private static JPanel mainBody;
 
@@ -14,6 +9,7 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         mainBody = body;
         menu1.setMainPanel(body);
+        setLocationRelativeTo(null);
 
     }
     
@@ -59,7 +55,7 @@ public class Dashboard extends javax.swing.JFrame {
         jScrollPane2.setViewportView(menu1);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/Group 222.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/Group 222 (2).png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

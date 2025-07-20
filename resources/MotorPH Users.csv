@@ -1,4 +1,3 @@
-Email,Password,First Name
-brad.sanjose@motorph.com,10007,Brad
-alice.romualdez@motorph.com,10008,Alice
-rosie.atienza@motorph.com,10009,Rosie
+Username,Password,First Name,Last Name,Role,Employee #
+vella.santos,10023,Vella,Santos,Employee,10023
+admin1,12345,Admin,User,Admin,NA

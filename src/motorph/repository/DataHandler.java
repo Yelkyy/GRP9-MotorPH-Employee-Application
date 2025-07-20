@@ -8,6 +8,7 @@ import motorph.model.EmployeeTimeLogs;
 import java.io.*;
 import java.nio.file.*;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DataHandler {
@@ -74,35 +75,51 @@ public class DataHandler {
     public static List<EmployeeTimeLogs> readEmployeeTimeLogs() {
         List<EmployeeTimeLogs> timeLogs = new ArrayList<>();
 
-        try (Reader reader = Files.newBufferedReader(TIME_LOG_CSV);
-             CSVReader csvReader = new CSVReader(reader)) {
+        try (BufferedReader br = Files.newBufferedReader(TIME_LOG_CSV)) {
+            String line;
+            boolean isFirstLine = true;
+            int lineNum = 0;
 
-            List<String[]> records = csvReader.readAll();
+            while ((line = br.readLine()) != null) {
+                lineNum++;
+                line = line.trim();
+                if (line.isEmpty()) continue;
 
-            if (records.isEmpty()) {
-                System.out.println("Warning: No records found in Time Logs CSV.");
-                return timeLogs;
-            }
+                String[] parts = line.split(",", -1);
 
-            records.remove(0); // Remove header
-
-            for (String[] record : records) {
-                if (record.length < 6) {
-                    System.out.println("Skipping malformed time log row: " + Arrays.toString(record));
+                // Skip header line
+                if (isFirstLine && line.toLowerCase().contains("employee")) {
+                    isFirstLine = false;
                     continue;
                 }
 
-                EmployeeTimeLogs timeLog = new EmployeeTimeLogs(
-                        record[0], record[1], record[2], record[3], record[4], record[5]
+                // Malformed row check
+                if (parts.length != 6) {
+                    System.out.println("⚠️ Skipping malformed time log at line " + lineNum + ": " + Arrays.toString(parts));
+                    continue;
+                }
+
+                EmployeeTimeLogs log = new EmployeeTimeLogs(
+                    parts[0].trim(),
+                    parts[1].trim(),
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    parts[4].trim(),
+                    parts[5].trim()
                 );
-                timeLogs.add(timeLog);
+
+                timeLogs.add(log);
             }
-        } catch (IOException | CsvException e) {
-            System.err.println("Error reading employee time logs: " + e.getMessage());
+
+        } catch (IOException e) {
+            System.err.println("❌ Error reading time logs: " + e.getMessage());
         }
 
         return timeLogs;
     }
+
+
+
 
     /**
      * Appends a new employee time log entry to the CSV file.

@@ -3,7 +3,6 @@ package motorph.ui;
 
 import motorph.model.EmployeeTimeLogs;
 import motorph.repository.DataHandler;
-import motorph.ui.components.CustomFont;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -118,6 +117,8 @@ public class Attendance extends javax.swing.JPanel {
         btnPrev = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         lblPageInfo = new javax.swing.JLabel();
+        sortBttn = new javax.swing.JButton();
+        refreshButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1054, 720));
@@ -168,7 +169,6 @@ public class Attendance extends javax.swing.JPanel {
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/search.png"))); // NOI18N
         searchButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         searchButton.setBorderPainted(false);
-        searchButton.setContentAreaFilled(false);
         searchButton.setFocusPainted(false);
         searchButton.setMaximumSize(new java.awt.Dimension(35, 35));
         searchButton.setMinimumSize(new java.awt.Dimension(0, 0));
@@ -216,6 +216,32 @@ public class Attendance extends javax.swing.JPanel {
 
         lblPageInfo.setText("Page 1 of 1");
 
+        sortBttn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/filter.png"))); // NOI18N
+        sortBttn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        sortBttn.setBorderPainted(false);
+        sortBttn.setFocusPainted(false);
+        sortBttn.setMaximumSize(new java.awt.Dimension(35, 35));
+        sortBttn.setMinimumSize(new java.awt.Dimension(0, 0));
+        sortBttn.setPreferredSize(new java.awt.Dimension(24, 24));
+        sortBttn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortBttnActionPerformed(evt);
+            }
+        });
+
+        refreshButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorph/icons/refresh_20dp_000000_FILL0_wght400_GRAD0_opsz20.png"))); // NOI18N
+        refreshButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        refreshButton1.setBorderPainted(false);
+        refreshButton1.setFocusPainted(false);
+        refreshButton1.setMaximumSize(new java.awt.Dimension(35, 35));
+        refreshButton1.setMinimumSize(new java.awt.Dimension(0, 0));
+        refreshButton1.setPreferredSize(new java.awt.Dimension(24, 24));
+        refreshButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -231,12 +257,18 @@ public class Attendance extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNext))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 983, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sortBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(refreshButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 983, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -247,9 +279,17 @@ public class Attendance extends javax.swing.JPanel {
                     .addComponent(searchBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addComponent(boarder1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(boarder1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(lblSubTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refreshButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(sortBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
@@ -352,6 +392,33 @@ public class Attendance extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
+    private void sortBttnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortBttnActionPerformed
+        JPopupMenu sortMenu = new JPopupMenu();
+
+        JMenuItem latestItem = new JMenuItem("Sort Date: Latest");
+        JMenuItem oldestItem = new JMenuItem("Sort Date: Oldest");
+
+        latestItem.addActionListener(e -> {
+            timeLogs.sort((a, b) -> b.getDate().compareTo(a.getDate())); 
+            currentPage = 1;
+            updateTablePage();
+        });
+
+        oldestItem.addActionListener(e -> {
+            timeLogs.sort((a, b) -> a.getDate().compareTo(b.getDate()));
+            currentPage = 1;
+            updateTablePage();
+        });
+
+        sortMenu.add(latestItem);
+        sortMenu.add(oldestItem);
+        sortMenu.show(sortBttn, 0, sortBttn.getHeight());
+    }//GEN-LAST:event_sortBttnActionPerformed
+
+    private void refreshButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_refreshButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable attendanceLogTable;
     private javax.swing.JSeparator boarder1;
@@ -361,7 +428,9 @@ public class Attendance extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPageInfo;
     private javax.swing.JLabel lblSubTitle;
+    private javax.swing.JButton refreshButton1;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
+    private javax.swing.JButton sortBttn;
     // End of variables declaration//GEN-END:variables
 }

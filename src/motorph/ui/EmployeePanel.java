@@ -1,7 +1,7 @@
 package motorph.ui;
 
 
-import motorph.ui.AddEmployee;
+import motorph.ui.panels.AddEmployee;
 import motorph.model.EmployeeDetails;
 import motorph.ui.DisplayEmployeeInfo;
 import motorph.repository.DataHandler;
@@ -20,7 +20,7 @@ public class EmployeePanel extends javax.swing.JPanel {
     
    // Pagination Variables and Employee List Setup
     private int currentPage = 1;
-    private int rowsPerPage = 20;  //  Number of employees to display per page in the table
+    private int rowsPerPage = 18;  //  Number of employees to display per page in the table
     private List<EmployeeDetails> employees;
 
     

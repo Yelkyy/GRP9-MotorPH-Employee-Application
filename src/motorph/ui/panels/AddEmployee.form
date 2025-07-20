@@ -547,19 +547,8 @@
         <Component class="javax.swing.JComboBox" name="empSupervisor">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="12">
+              <StringArray count="1">
                 <StringItem index="0" value="Select Supervisor"/>
-                <StringItem index="1" value="Garcia, Manuel III"/>
-                <StringItem index="2" value="Lim, Antonio"/>
-                <StringItem index="3" value="Villanueva, Andrea Mae"/>
-                <StringItem index="4" value="San, Jose Brad"/>
-                <StringItem index="5" value="Aquino, Bianca Sofia"/>
-                <StringItem index="6" value="Alvaro, Roderick"/>
-                <StringItem index="7" value="Salcedo Anthony"/>
-                <StringItem index="8" value="Romualdez, Fredrick"/>
-                <StringItem index="9" value="Mata, Christian"/>
-                <StringItem index="10" value="De Leon, Selena"/>
-                <StringItem index="11" value="Reyes, Isabella"/>
               </StringArray>
             </Property>
           </Properties>

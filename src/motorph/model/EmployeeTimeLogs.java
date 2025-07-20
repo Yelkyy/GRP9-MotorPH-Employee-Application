@@ -7,48 +7,50 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class EmployeeTimeLogs {
 
-    // Employee time log details: personal info and time logs
     private final String employeeNumber;
     private final String lastName;
     private final String firstName;
-    private final LocalDate date; // Changed to LocalDate for better date handling
+    private final LocalDate date;
     private final String logIn;
     private final String logOut;
 
-    // List of possible date formats to handle different formats
+    // Accepts multiple date formats from CSV
     private static final List<DateTimeFormatter> DATE_FORMATS = Arrays.asList(
-            DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-            DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.US),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US),
+        DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.US)
+    );
 
-    // Constructor to initialize EmployeeTimeLogs with data
-    public EmployeeTimeLogs(String employeeNumber, String lastName, String firstName, String date, String logIn,
-            String logOut) {
-        this.employeeNumber = employeeNumber;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.date = parseDate(date); // Convert the string date to LocalDate
-        this.logIn = logIn;
-        this.logOut = logOut;
+    public EmployeeTimeLogs(String employeeNumber, String lastName, String firstName, String date, String logIn, String logOut) {
+        this.employeeNumber = clean(employeeNumber);
+        this.lastName = clean(lastName);
+        this.firstName = clean(firstName);
+        this.date = parseDate(clean(date));
+        this.logIn = clean(logIn);
+        this.logOut = clean(logOut);
     }
 
-    // Try to parse the date string into a LocalDate, based on different formats
+    private String clean(String input) {
+        return input == null ? "" : input.replace("\"", "").trim();
+    }
+
     private LocalDate parseDate(String dateStr) {
+        if (dateStr == null) return null;
+        dateStr = dateStr.replace("\"", "").trim();
+
         for (DateTimeFormatter formatter : DATE_FORMATS) {
             try {
-                return LocalDate.parse(dateStr, formatter); // Parse using current format
-            } catch (DateTimeParseException e) {
-                // Ignore and try the next format if the current one fails
+                return LocalDate.parse(dateStr, formatter);
+            } catch (DateTimeParseException ignored) {
             }
         }
-        System.err.println("Invalid date format: " + dateStr); // Error message if no format matches
-        return null; // Return null if date is invalid
+        System.err.println("❌ Invalid date format: \"" + dateStr + "\"");
+        return null;
     }
-
-    // Getter methods to retrieve employee info and time logs
 
     public String getEmployeeNumber() {
         return employeeNumber;
@@ -62,9 +64,14 @@ public class EmployeeTimeLogs {
         return firstName;
     }
 
-    // Returns the date as a formatted string, or "Invalid Date" if the date is null
+    // 👇 Used for display and sorting based on CSV format
     public String getDate() {
-        return (date != null) ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "Invalid Date";
+        return (date != null) ? date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) : "Invalid Date";
+    }
+
+    // 👇 Optional ISO format getter
+    public String getDateISO() {
+        return (date != null) ? date.format(DateTimeFormatter.ISO_LOCAL_DATE) : "Invalid Date";
     }
 
     public String getLogIn() {
@@ -75,44 +82,39 @@ public class EmployeeTimeLogs {
         return logOut;
     }
 
-    // Method to calculate the hours worked based on log-in and log-out times
     public double getHoursWorked() {
-        // If log-in or log-out is empty, return 0 hours
         if (logIn == null || logOut == null || logIn.isEmpty() || logOut.isEmpty()) {
             return 0.0;
         }
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm"); // Time format pattern
-            LocalTime inTime = LocalTime.parse(logIn, formatter); // Parse log-in time
-            LocalTime outTime = LocalTime.parse(logOut, formatter); // Parse log-out time
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            LocalTime inTime = LocalTime.parse(logIn, formatter);
+            LocalTime outTime = LocalTime.parse(logOut, formatter);
 
-            // Calculate the time worked in minutes and convert to hours
             long minutesWorked = Duration.between(inTime, outTime).toMinutes();
-            return minutesWorked / 60.0; // Return hours worked as a double
+            return minutesWorked / 60.0;
         } catch (Exception e) {
             System.err.println("Error processing time log for Employee #" + employeeNumber + ": " + e.getMessage());
-            return 0.0; // Return 0 if there is any error in parsing or calculation
+            return 0.0;
         }
     }
 
-    // Method to print a readable representation of the employee's time log
     @Override
     public String toString() {
         return "Employee #" + employeeNumber + " | Name: " + firstName + " " + lastName +
                 " | Date: " + getDate() + " | Log In: " + logIn + " | Log Out: " + logOut +
                 " | Hours Worked: " + getHoursWorked();
     }
-    
+
     public String[] toCSVArray() {
         return new String[] {
-            employeeNumber,
-            lastName,
-            firstName,
-            (date != null) ? date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) : "",
-            logIn,
-            logOut
+            clean(employeeNumber),
+            clean(lastName),
+            clean(firstName),
+            getDate(), // Use consistent MM/dd/yyyy format
+            clean(logIn),
+            clean(logOut)
         };
     }
-
 }

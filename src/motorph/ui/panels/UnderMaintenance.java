@@ -1,4 +1,4 @@
-package motorph.ui;
+package motorph.ui.panels;
 
 
 public class UnderMaintenance extends javax.swing.JPanel {

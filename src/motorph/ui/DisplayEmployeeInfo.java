@@ -10,16 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 
 
 
 public class DisplayEmployeeInfo extends javax.swing.JDialog {
     
-    List<JTextField> empInfoFieldList;
+    List<JTextComponent> empInfoFieldList;
     private final EmployeePanel employeeListRefresher;
 
     public DisplayEmployeeInfo(JFrame parent, String employeeNumber, EmployeePanel employeeListRefresher) {
@@ -28,6 +29,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         
         this.employeeListRefresher = employeeListRefresher;
         prepareFormUI();
+        loadSupervisorsDropdown(employeeNumber);
         loadEmployeeDetails(employeeNumber);
     }
 
@@ -38,22 +40,26 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         saveEmpButton.setVisible(false);
         cancelEmpButton.setVisible(false);       
         applyCustomFont();
-        
+
         empInfoFieldList = Arrays.asList(
-                empNum, firstName, lastName, birthday, address, phoneNum,
+                empNum, firstName, lastName, birthday, address2, phoneNum,
                 sssNum, philHealthNum, tinNum, pagIbigNum,
                 empBasicSalary, empRiceSubsidy, empPhoneAllwc,
                 empClothingAllwc, empSemiMonthlyRate, empHourlyRate
+                
         );
         
-        for (JTextField field : empInfoFieldList) {
+        
+        
+        for (JTextComponent field : empInfoFieldList) {
             boolean isEmpNum = field == empNum;
             field.setEditable(false);
             field.setFocusable(false);
             field.setBackground(new java.awt.Color(240, 240, 240));
             field.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-            field.setHighlighter(null);
         }
+
+        
         
         empStatus.setEnabled(false);
         empPosition.setEnabled(false);
@@ -74,7 +80,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             lastName.setText(emp.getLastName());
 
             birthday.setText(formatDate(emp.getBirthday()));
-            address.setText(emp.getAddress());
+            address2.setText(emp.getAddress());
             phoneNum.setText(emp.getPhoneNumber());
             sssNum.setText(emp.getSssNumber());
             philHealthNum.setText(emp.getPhilhealthNumber());
@@ -117,15 +123,15 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         }
 
         private void setEditMode(boolean isEditing) {
-            for (JTextField field : empInfoFieldList) {
+            for (JTextComponent field : empInfoFieldList) {
                 boolean isEmpNum = field == empNum;
                 field.setEditable(isEditing && !isEmpNum);
                 field.setFocusable(isEditing && !isEmpNum);
                 field.setCursor(new java.awt.Cursor(isEditing ? java.awt.Cursor.TEXT_CURSOR : java.awt.Cursor.DEFAULT_CURSOR));
                 field.setBackground(isEmpNum ? new java.awt.Color(240, 240, 240) :
                                                (isEditing ? Color.WHITE : new java.awt.Color(240, 240, 240)));
-                field.setFocusable(isEditing && !isEmpNum);
             }
+
             
             empStatus.setEnabled(isEditing);
             empPosition.setEnabled(isEditing);
@@ -136,6 +142,47 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             editEmpButton.setVisible(!isEditing);
             deleteEmpButton.setVisible(!isEditing);
         }
+
+        private void loadSupervisorsDropdown(String currentEmpNumber) {
+            List<EmployeeDetails> allEmployees = DataHandler.readEmployeeDetails();
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+            model.addElement("Select Supervisor");
+
+            String currentSupervisor = null;
+
+            // Grab current supervisor first (for restoring selected item)
+            for (EmployeeDetails emp : allEmployees) {
+                if (emp.getEmployeeNumber().equals(currentEmpNumber)) {
+                    currentSupervisor = emp.getImmediateSupervisor();
+                    break;
+                }
+            }
+
+            // Add all other employees to dropdown
+            for (EmployeeDetails emp : allEmployees) {
+                if (!emp.getEmployeeNumber().equals(currentEmpNumber)) {
+                    String fullName = emp.getLastName() + ", " + emp.getFirstName();
+                    model.addElement(fullName);
+                }
+            }
+
+            // 🛠️ If current supervisor is not yet in dropdown (e.g. no longer in list), add it
+            if (currentSupervisor != null &&
+                !modelContains(model, currentSupervisor)) {
+                model.addElement(currentSupervisor);
+            }
+
+            empSupervisor.setModel(model);
+        }
+        
+        private boolean modelContains(DefaultComboBoxModel<String> model, String item) {
+            for (int i = 0; i < model.getSize(); i++) {
+                if (model.getElementAt(i).equals(item)) return true;
+            }
+            return false;
+        }
+
+
 
 
     @SuppressWarnings("unchecked")
@@ -155,7 +202,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         lastName = new javax.swing.JTextField();
         firstName = new javax.swing.JTextField();
-        address = new javax.swing.JTextField();
         phoneNum = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -186,6 +232,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         empStatus = new javax.swing.JComboBox<>();
         empPosition = new javax.swing.JComboBox<>();
         empSupervisor = new javax.swing.JComboBox<>();
+        address1 = new javax.swing.JScrollPane();
+        address2 = new javax.swing.JTextArea();
 
         setTitle("Employee Information");
         setMinimumSize(new java.awt.Dimension(993, 720));
@@ -247,12 +295,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
         firstName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 firstNameActionPerformed(evt);
-            }
-        });
-
-        address.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addressActionPerformed(evt);
             }
         });
 
@@ -384,12 +426,24 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
             }
         });
 
-        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor", "Garcia, Manuel III", "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "Aquino, Bianca Sofia", "Alvaro, Roderick", "Salcedo Anthony", "Romualdez, Fredrick", "Mata, Christian", "De Leon, Selena", "Reyes, Isabella" }));
+        empSupervisor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supervisor" }));
         empSupervisor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 empSupervisorActionPerformed(evt);
             }
         });
+
+        address1.setBackground(new java.awt.Color(255, 255, 255));
+        address1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        address1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        address2.setEditable(false);
+        address2.setBackground(new java.awt.Color(255, 255, 255));
+        address2.setColumns(2);
+        address2.setLineWrap(true);
+        address2.setRows(5);
+        address2.setWrapStyleWord(true);
+        address1.setViewportView(address2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -402,13 +456,9 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(phoneNum))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(address1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -442,7 +492,11 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(pagIbigNum, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(pagIbigNum, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(phoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(73, 73, 73)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -525,21 +579,26 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                     .addComponent(empBasicSalary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(birthday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel17)
-                    .addComponent(empRiceSubsidy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(phoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel18)
-                    .addComponent(empPhoneAllwc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(empClothingAllwc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel17)
+                            .addComponent(empRiceSubsidy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel18)
+                            .addComponent(empPhoneAllwc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel19)
+                            .addComponent(empClothingAllwc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(address1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(11, 11, 11)
@@ -599,10 +658,6 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     private void firstNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_firstNameActionPerformed
-
-    private void addressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_addressActionPerformed
 
     private void phoneNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneNumActionPerformed
         // TODO add your handling code here:
@@ -702,7 +757,7 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
                 lastName.getText().trim(),
                 firstName.getText().trim(),
                 birthday.getText().trim(),
-                address.getText().trim(),
+                address2.getText().trim(),
                 phoneNum.getText().trim(),
                 sssNum.getText().trim(),
                 philHealthNum.getText().trim(),
@@ -750,7 +805,8 @@ public class DisplayEmployeeInfo extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelEmpButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField address;
+    private javax.swing.JScrollPane address1;
+    private javax.swing.JTextArea address2;
     private javax.swing.JFormattedTextField birthday;
     private javax.swing.JButton cancelEmpButton;
     private javax.swing.JButton deleteEmpButton;
